@@ -13,6 +13,7 @@ import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGroup, StaggerItem } from "@/components/motion/Stagger";
 import { InteractiveDemo } from "@/components/InteractiveDemo";
+import { getAssetPath } from "@/lib/utils";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -442,11 +443,11 @@ function Figure({ figure, accent }: { figure: CaseFigure; accent: string }) {
   return (
     <figure>
       {figure.src && figure.frame === "macbook" ? (
-        <MacbookFrame src={figure.src} alt={figure.alt} />
+        <MacbookFrame src={getAssetPath(figure.src)} alt={figure.alt} />
       ) : figure.src ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={figure.src}
+          src={getAssetPath(figure.src)}
           alt={figure.alt}
           className="w-full rounded-lg border border-line"
         />
@@ -493,7 +494,7 @@ function MacbookFrame({ src, alt }: { src: string; alt: string }) {
         />
         <div className="overflow-hidden rounded-[7px] bg-black">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={src} alt={alt} className="block w-full" />
+          <img src={getAssetPath(src)} alt={alt} className="block w-full" />
         </div>
       </div>
 

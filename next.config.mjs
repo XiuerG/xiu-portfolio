@@ -9,8 +9,15 @@ const nextConfig = {
         images: { unoptimized: true },
         basePath: `/${repoName}`,
         assetPrefix: `/${repoName}/`,
+        env: {
+          NEXT_PUBLIC_BASE_PATH: `/${repoName}`,
+        },
       }
-    : {}),
+    : {
+        env: {
+          NEXT_PUBLIC_BASE_PATH: "",
+        },
+      }),
 };
 
 export default nextConfig;

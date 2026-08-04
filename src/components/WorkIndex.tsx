@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { projects } from "@/lib/projects";
 import { Reveal } from "@/components/motion/Reveal";
+import { getAssetPath } from "@/lib/utils";
 
 /**
  * Selected Work — full-bleed project banners (reference: sophiemchen.com).
@@ -58,14 +59,14 @@ export function WorkIndex() {
                       file building on the right — reads as the real product. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/corelink/banner-back.png"
+                    src={getAssetPath("/corelink/banner-back.png")}
                     alt="CoReLink case intake — the CHW's notes, CoReLink's follow-up question, and the case file building alongside"
                     className="float-a absolute left-0 top-0 z-[1] w-[84%] rounded-xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
                   />
                   {/* A tall detail card in front — the verified matches. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/corelink/banner-front.png"
+                    src={getAssetPath("/corelink/banner-front.png")}
                     alt="CoReLink verified resource matches, ready to add to the plan"
                     className="float-b absolute bottom-0 right-0 z-[2] w-[46%] rounded-xl border border-white/10 shadow-[0_30px_70px_rgba(0,0,0,0.55)]"
                   />
@@ -73,7 +74,7 @@ export function WorkIndex() {
               ) : p.cover.src ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
-                  src={p.cover.src}
+                  src={getAssetPath(p.cover.src)}
                   alt={p.cover.alt}
                   className="float-a w-full rounded-xl border border-white/10 shadow-[0_36px_90px_rgba(0,0,0,0.6)]"
                 />
