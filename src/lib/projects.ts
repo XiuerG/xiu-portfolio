@@ -86,6 +86,20 @@ export type CaseBlock =
       title?: string;
       caption?: string;
       figures: CaseFigure[];
+    }
+  | {
+      /** Compact research/evaluation summary — a grid of label → value(s)
+       *  entries (Research Question, Methods, My Role, Status…). Sits near
+       *  the top of a case study, before the detailed process. */
+      kind: "researchOverview";
+      entries: { label: string; value: string | string[] }[];
+    }
+  | {
+      /** Honest scoping note at the foot of a case study — what stage the work
+       *  reached and what has not yet been evaluated. */
+      kind: "limitations";
+      title?: string;
+      body: string[];
     };
 
 export type CaseSection = {
@@ -109,9 +123,13 @@ export type CaseStudy = {
 export type Project = {
   slug: string;
   title: string;
+  /** Descriptive subtitle shown under the title on the card + case study. */
+  subtitle?: string;
   year: string;
   role: string;
   domain: string;
+  /** Topic tags shown on the homepage project card. */
+  tags?: string[];
   /** One-line summary shown in the index and case study header. */
   summary: string;
   /** Per-project theme color used for the cover block + section accents. */
@@ -134,11 +152,18 @@ export const projects: Project[] = [
   {
     slug: "wet-guard",
     title: "WET Guard",
+    subtitle: "Human-Centered Digital Support for Written Exposure Therapy",
     year: "2026",
-    role: "UX · UI · AI Systems",
-    domain: "Digital health — AI clinical workflow",
+    role: "Interaction Design · Front-End Prototyping",
+    domain: "Digital Mental Health · Health HCI",
+    tags: [
+      "Digital Mental Health",
+      "Health HCI",
+      "Safety-Aware Interaction",
+      "Front-End Prototyping",
+    ],
     summary:
-      "Helping therapists deliver Written Exposure Therapy — with AI that follows the manual and knows when to escalate.",
+      "Translating Written Exposure Therapy into a safety-aware digital intervention that supports treatment without replacing clinical judgment.",
     accent: "#84b59f",
     cover: {
       src: "/wetguard/console-session.png",
@@ -171,6 +196,44 @@ export const projects: Project[] = [
       heroNote:
         "How might AI support therapists throughout the therapy workflow — without replacing clinical judgment?",
       sections: [
+        {
+          id: "research-overview",
+          label: "Research Overview",
+          blocks: [
+            {
+              kind: "researchOverview",
+              entries: [
+                {
+                  label: "Research Question",
+                  value:
+                    "How can a digital system support Written Exposure Therapy while preserving treatment fidelity, patient safety, and clinical judgment?",
+                },
+                {
+                  label: "Context",
+                  value:
+                    "A digital mental health intervention for people experiencing trauma-related symptoms.",
+                },
+                {
+                  label: "Methods",
+                  value: [
+                    "Protocol Translation",
+                    "Workflow Analysis",
+                    "Safety-State Modeling",
+                    "Interaction Design",
+                    "Front-End Prototyping",
+                  ],
+                },
+                { label: "My Role", value: "Interaction Design and Front-End Lead" },
+                { label: "Supervision", value: "Supervised by Dr. Ying Ding" },
+                {
+                  label: "Status",
+                  value:
+                    "Interactive research prototype prepared for future evaluation.",
+                },
+              ],
+            },
+          ],
+        },
         {
           id: "context",
           label: "Context",
@@ -419,6 +482,19 @@ export const projects: Project[] = [
           ],
         },
         {
+          id: "limitations",
+          label: "Limitations",
+          blocks: [
+            {
+              kind: "limitations",
+              body: [
+                "This project produced an interactive research prototype. It has not yet been evaluated with patients or therapists, and no claims are made about clinical effectiveness.",
+                "Future work should examine usability, treatment fidelity, risk escalation, and the division of responsibility between AI support and clinical judgment.",
+              ],
+            },
+          ],
+        },
+        {
           id: "contribution",
           label: "My Contribution",
           blocks: [
@@ -483,11 +559,18 @@ export const projects: Project[] = [
   {
     slug: "corelink",
     title: "CoReLink",
-    year: "2026",
-    role: "UX · UI · Full-stack",
-    domain: "Digital health — AI care navigation",
+    subtitle: "AI Resource Navigation for Dementia Caregivers",
+    year: "2025",
+    role: "Research Framing · Interaction Design · Front-End",
+    domain: "Dementia Care · Human-Centered AI",
+    tags: [
+      "Dementia Care",
+      "Caregiver Support",
+      "Human-Centered AI",
+      "Digital Health",
+    ],
     summary:
-      "Turning messy case conversations into verified, bilingual care plans for community health workers.",
+      "Turning caregiver narratives and clinical notes into structured, actionable resource recommendations for care teams.",
     accent: "#4e8d76",
     cover: {
       src: "/corelink/match.png",
@@ -524,8 +607,53 @@ export const projects: Project[] = [
         frame: "macbook",
       },
       heroNote:
-        "How might AI turn one messy case conversation into a verified, bilingual action plan — without asking the community health worker to trust it blindly?",
+        "How might AI turn one messy case conversation into a structured, bilingual action plan — without asking the care team to trust it blindly?",
       sections: [
+        {
+          id: "research-overview",
+          label: "Research Overview",
+          blocks: [
+            {
+              kind: "researchOverview",
+              entries: [
+                {
+                  label: "Research Question",
+                  value:
+                    "How can AI translate complex caregiver and clinical narratives into actionable care resources while keeping care teams in control of final decisions?",
+                },
+                {
+                  label: "Context",
+                  value: "Dementia caregiving and community resource navigation.",
+                },
+                {
+                  label: "Methods",
+                  value: [
+                    "Care Workflow Modeling",
+                    "Narrative-Based Need Extraction",
+                    "Resource Retrieval",
+                    "Interaction Design",
+                    "Front-End Prototyping",
+                  ],
+                },
+                {
+                  label: "My Role",
+                  value: [
+                    "Research Framing",
+                    "Workflow Design",
+                    "Interaction Design",
+                    "Front-End Prototyping",
+                  ],
+                },
+                { label: "Supervision", value: "Supervised by Dr. Bo Xie" },
+                {
+                  label: "Status",
+                  value:
+                    "End-to-end prototype; formal user evaluation not yet completed.",
+                },
+              ],
+            },
+          ],
+        },
         {
           id: "context",
           label: "Context",
@@ -542,12 +670,12 @@ export const projects: Project[] = [
         },
         {
           id: "prototype",
-          label: "Live Prototype",
+          label: "Prototype Walkthrough",
           blocks: [
             {
               kind: "prose",
               body: [
-                "Watch the product work a real case — a Spanish-speaking Medicare patient discharged in Travis County. It plays itself: the CHW's notes type in, CoReLink reads them and replies, the case file fills, and it walks step by step from intake to a verified, bilingual plan. Click any step to drive it yourself.",
+                "Watch the prototype work a sample case — a Spanish-speaking Medicare patient discharged in Travis County. It plays itself: the case notes type in, CoReLink reads them and replies, the case file fills, and it walks step by step from intake to a structured, bilingual plan. Click any step to drive it yourself.",
               ],
             },
             { kind: "demo" },
@@ -607,6 +735,18 @@ export const projects: Project[] = [
               lead: "Trust is an interface problem.",
               body: [
                 "The hardest decisions weren't visual — they were about what the AI should assert, what it should ask about, and what it should refuse to pass along. Like WET Guard, CoReLink sits in the space I care most about: AI that supports human expertise in high-stakes care, rather than replacing it.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "limitations",
+          label: "Limitations",
+          blocks: [
+            {
+              kind: "limitations",
+              body: [
+                "The prototype demonstrates a complete workflow from care narratives to resource planning, but it has not yet been evaluated through a formal study with caregivers or community health workers.",
               ],
             },
           ],
@@ -677,11 +817,19 @@ export const projects: Project[] = [
   {
     slug: "jasmines-beat",
     title: "Jasmine's Beat",
+    subtitle:
+      "Accessibility Evaluation and Redesign of an Adaptive Dance Platform",
     year: "2023",
-    role: "UX Designer & Researcher",
-    domain: "Accessibility · Inclusive design",
+    role: "Accessibility Evaluation · Interaction Design",
+    domain: "Accessibility Evaluation · Inclusive Design",
+    tags: [
+      "Accessibility Evaluation",
+      "Inclusive Design",
+      "WCAG 2.2",
+      "Interaction Design",
+    ],
     summary:
-      "Designing an inclusive digital experience for an adaptive dance community.",
+      "Evaluating and redesigning key digital journeys for an adaptive dance community using WCAG 2.2.",
     accent: "#5c93a0",
     cover: {
       src: "/jasmines-cover.png",
@@ -718,6 +866,49 @@ export const projects: Project[] = [
       heroNote:
         "Jasmine's Beat empowers people of all abilities through adaptive dance. Yet its digital experience unintentionally excluded many of the people it was designed to serve.",
       sections: [
+        {
+          id: "evaluation-overview",
+          label: "Evaluation Overview",
+          blocks: [
+            {
+              kind: "researchOverview",
+              entries: [
+                {
+                  label: "Evaluation Question",
+                  value:
+                    "What barriers prevent people with visual, motor, and cognitive access needs from completing key tasks?",
+                },
+                {
+                  label: "Methods",
+                  value: [
+                    "WCAG 2.2 AA Review",
+                    "Automated Testing",
+                    "Keyboard Navigation",
+                    "Screen-Reader Inspection",
+                    "Interface Analysis",
+                  ],
+                },
+                {
+                  label: "Scope",
+                  value: [
+                    "Class Discovery",
+                    "Registration",
+                    "Donation",
+                    "Content Navigation",
+                  ],
+                },
+                {
+                  label: "My Role",
+                  value: [
+                    "Accessibility Evaluation",
+                    "Interaction Design",
+                    "Prototyping",
+                  ],
+                },
+              ],
+            },
+          ],
+        },
         {
           id: "context",
           label: "Context",
@@ -892,7 +1083,7 @@ export const projects: Project[] = [
           blocks: [
             {
               kind: "prose",
-              lead: "Accessibility isn't a checklist.",
+              lead: "Beyond the guidelines.",
               body: [
                 "Instead of designing only to satisfy WCAG guidelines, we focused on creating an experience that felt intuitive regardless of how users interacted with the interface.",
                 "Accessibility became a design principle rather than a validation step.",
@@ -939,11 +1130,24 @@ export const projects: Project[] = [
           blocks: [
             {
               kind: "prose",
-              lead: "Accessibility is product quality.",
+              lead:
+                "Accessibility is not a checklist; it is a measure of whether people can meaningfully participate.",
               body: [
                 "Working on Jasmine's Beat changed how I think about accessibility. Designing for people with different abilities is not about creating separate experiences — it is about creating one experience that works for everyone.",
                 "Although this project focused on an adaptive dance community, the principles directly translate to digital health, where trust, accessibility, and equitable participation are essential to patient and caregiver experiences.",
-                "This project reinforced my belief that inclusive design is not an additional feature — it is the foundation of responsible product design.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "scope",
+          label: "Project Scope",
+          blocks: [
+            {
+              kind: "limitations",
+              title: "Project Scope",
+              body: [
+                "This project was a multi-method accessibility evaluation and redesign exercise. It did not include a participant-based study with disabled users.",
               ],
             },
           ],

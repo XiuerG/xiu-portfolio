@@ -61,6 +61,13 @@ export default async function CaseStudy({
               {project.title}
             </h1>
           </Reveal>
+          {project.subtitle && (
+            <Reveal delay={0.08}>
+              <p className="mt-4 max-w-2xl font-display text-xl font-medium leading-snug text-bone/80 md:text-2xl">
+                {project.subtitle}
+              </p>
+            </Reveal>
+          )}
           <Reveal delay={0.1}>
             <p className="mt-6 max-w-2xl text-lg text-mist">{project.summary}</p>
           </Reveal>
@@ -116,10 +123,10 @@ export default async function CaseStudy({
         <p className="mt-4 text-lg text-mist">Where do we go from here?</p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Link
-            href="/contact"
+            href="/#contact"
             className="rounded-full bg-bone px-7 py-3 font-display text-sm font-semibold text-ground transition-transform duration-300 hover:scale-[1.05]"
           >
-            Work With Me
+            Get in Touch
           </Link>
           <Link
             href="/"
@@ -432,6 +439,54 @@ function Block({ block, accent }: { block: CaseBlock; accent: string }) {
               </ul>
             </div>
           ))}
+        </div>
+      );
+
+    case "researchOverview":
+      return (
+        <dl className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
+          {block.entries.map((entry) => (
+            <div key={entry.label}>
+              <dt
+                className="font-mono text-[0.65rem] uppercase tracking-[0.2em]"
+                style={{ color: accent }}
+              >
+                {entry.label}
+              </dt>
+              {Array.isArray(entry.value) ? (
+                <dd className="mt-3 flex flex-wrap gap-2">
+                  {entry.value.map((v) => (
+                    <span
+                      key={v}
+                      className="rounded-full border border-line px-3 py-1 text-xs text-bone/90"
+                    >
+                      {v}
+                    </span>
+                  ))}
+                </dd>
+              ) : (
+                <dd className="mt-2 text-[15px] leading-relaxed text-bone/90">
+                  {entry.value}
+                </dd>
+              )}
+            </div>
+          ))}
+        </dl>
+      );
+
+    case "limitations":
+      return (
+        <div
+          className="rounded-2xl border border-line bg-raised/40 p-6 md:p-8"
+          style={{ borderLeft: `3px solid ${accent}` }}
+        >
+          <div className="space-y-4">
+            {block.body.map((p, i) => (
+              <p key={i} className="text-[15px] leading-relaxed text-bone/90">
+                {p}
+              </p>
+            ))}
+          </div>
         </div>
       );
   }

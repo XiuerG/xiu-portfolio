@@ -23,7 +23,7 @@ export const greeting =
 
 /** Grounding bio (written, not improvised). */
 export const bio =
-  "Xiuer Gu is a UX / interaction designer who is frontend-capable and AI-native in how she works. She designs considered interfaces and builds the front-end herself — in React, Next.js, Tailwind, and Motion — so the interaction details survive all the way to production.";
+  "Xiuer Gu is an interdisciplinary Health HCI researcher and designer, with training in Information Studies and Art & Technology. She works across HCI research, interaction design, and front-end prototyping — focusing on human-centered AI for digital health, mental health, caregiving, and accessibility.";
 
 /** Pixel = Art & Technology origin (§5.9) — a quiet identity note, not décor. */
 export const originNote =
@@ -53,7 +53,7 @@ export const stances: Stance[] = [
       "frontend", "front-end", "designer-developer", "hybrid",
     ],
     content:
-      "Honestly, she doesn't split them. Xiuer designs with the build in mind and builds to protect the design — the interaction details only survive if the same person carries them to production. If you need one label: a designer who ships her own front-end.",
+      "Honestly, she doesn't split them. Xiuer researches and designs with the build in mind, and prototypes the front-end herself — so the interaction details survive from a research question all the way to a working system. If you need one label: a Health HCI researcher who builds her own prototypes.",
     relatedSlugs: ["wet-guard"],
   },
   {
@@ -65,7 +65,7 @@ export const stances: Stance[] = [
       "trauma", "wet",
     ],
     content:
-      "That's actually her strongest thread. WET Guard is an AI-assisted clinical workflow platform for Written Exposure Therapy — designed and built end to end for therapists and trauma patients. CoReLink carries the same thread into community health: AI-assisted care navigation that gets families verified, bilingual resource plans. And on Jasmine's Beat she ran a WCAG audit and rebuilt it into an accessible design system. Research-driven, lowering barriers, high-stakes contexts — that's where she leans.",
+      "That's actually her strongest thread. WET Guard is a safety-aware research prototype for Written Exposure Therapy — a digital mental health intervention designed to support treatment without replacing clinical judgment. CoReLink carries the thread into caregiving: a human-centered AI prototype that turns caregiver narratives into structured, actionable resource recommendations. And Jasmine's Beat was a WCAG 2.2 accessibility evaluation and redesign. Research-driven, lowering barriers, high-stakes care — that's where she leans. Both health projects are prototypes prepared for future evaluation, not clinically validated.",
     relatedSlugs: ["wet-guard", "corelink"],
   },
   {
@@ -131,7 +131,7 @@ export const stances: Stance[] = [
       "github", "resume", "cv", "connect", "talk", "message",
     ],
     content:
-      "Easiest is the Contact page — email, résumé, LinkedIn, GitHub are all there. She's open to interaction design and frontend-leaning design roles and collaborations.",
+      "Easiest is the Contact section at the bottom of the page — her email, CV, GitHub and LinkedIn are all there. She's open to Health HCI research assistant and research associate roles, research collaborations, and PhD opportunities.",
   },
 ];
 

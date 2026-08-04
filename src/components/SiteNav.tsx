@@ -4,16 +4,22 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CV_PATH } from "@/lib/site";
+import { getAssetPath } from "@/lib/utils";
 
-const menuLinks = [
-  { href: "/", label: "Home" },
-  { href: "/#work", label: "Work" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+type MenuLink = { href: string; label: string; external?: boolean };
+
+const menuLinks: MenuLink[] = [
+  { href: "/#projects", label: "Projects" },
+  { href: "/#publications", label: "Publications" },
+  { href: "/#experience", label: "Experience" },
+  { href: "/#about", label: "About" },
+  { href: getAssetPath(CV_PATH), label: "CV", external: true },
+  { href: "/#contact", label: "Contact" },
 ];
 
 /**
- * SiteNav — name on the left; "Work With Me" pill + hamburger on the right.
+ * SiteNav — name on the left; "Download CV" pill + hamburger on the right.
  * The hamburger opens a full-screen overlay menu: big display links that
  * stagger in, email at the bottom. Esc or any link closes it; body scroll is
  * locked while open.
@@ -55,25 +61,46 @@ export function SiteNav() {
                 }`}
                 style={{ transitionDelay: open ? `${80 + i * 70}ms` : "0ms" }}
               >
-                <Link
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  tabIndex={open ? 0 : -1}
-                  className="group flex items-baseline gap-6 py-5"
-                >
-                  <span className="font-mono text-sm text-mist tabular-nums">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="font-display text-[clamp(36px,7vw,64px)] font-bold leading-none transition-colors duration-300 group-hover:text-accent">
-                    {l.label}
-                  </span>
-                  <span
-                    className="ml-auto translate-x-2 font-display text-2xl text-mist opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
-                    aria-hidden
-                  >
-                    →
-                  </span>
-                </Link>
+                {(() => {
+                  const inner = (
+                    <>
+                      <span className="font-mono text-sm text-mist tabular-nums">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="font-display text-[clamp(36px,7vw,64px)] font-bold leading-none transition-colors duration-300 group-hover:text-accent">
+                        {l.label}
+                      </span>
+                      <span
+                        className="ml-auto translate-x-2 font-display text-2xl text-mist opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+                        aria-hidden
+                      >
+                        {l.external ? "↗" : "→"}
+                      </span>
+                    </>
+                  );
+                  const cls = "group flex items-baseline gap-6 py-5";
+                  return l.external ? (
+                    <a
+                      href={l.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setOpen(false)}
+                      tabIndex={open ? 0 : -1}
+                      className={cls}
+                    >
+                      {inner}
+                    </a>
+                  ) : (
+                    <Link
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      tabIndex={open ? 0 : -1}
+                      className={cls}
+                    >
+                      {inner}
+                    </Link>
+                  );
+                })()}
               </li>
             ))}
           </ul>
@@ -110,13 +137,14 @@ export function SiteNav() {
           </Link>
           <div className="flex items-center gap-3 md:gap-4">
             <ThemeToggle />
-            <Link
-              href="/contact"
-              onClick={() => setOpen(false)}
-              className="inline-block rounded-full bg-bone px-5 py-2 font-display text-sm font-semibold text-ground transition-transform duration-300 hover:scale-[1.05]"
+            <a
+              href={getAssetPath(CV_PATH)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden rounded-full bg-bone px-5 py-2 font-display text-sm font-semibold text-ground transition-transform duration-300 hover:scale-[1.05] sm:inline-block"
             >
-              Work With Me
-            </Link>
+              Download CV
+            </a>
             <button
               type="button"
               aria-label={open ? "Close menu" : "Open menu"}

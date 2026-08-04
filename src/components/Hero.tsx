@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { CV_PATH } from "@/lib/site";
+import { getAssetPath } from "@/lib/utils";
 
 /** Headline, split into fixed display lines. `em` words render in italic terracotta. */
 const HEADLINE_LINES: { t: string; em?: boolean }[][] = [
@@ -134,12 +136,12 @@ export function Hero() {
 
       <div className="relative z-[1] mx-auto w-full max-w-[1120px] text-center">
         <motion.div
-          className="mb-6 font-display text-[clamp(16px,1.8vw,22px)] font-medium text-mist"
+          className="mb-6 font-mono text-[clamp(11px,1.1vw,13px)] font-semibold uppercase tracking-[0.22em] text-accent"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          Hi, I&apos;m Xiuer Gu!
+          Health HCI Researcher &amp; Designer
         </motion.div>
 
         <h1 className="m-0 font-display text-[clamp(36px,6.2vw,84px)] font-bold leading-[1.08] tracking-[-0.02em]">
@@ -175,14 +177,14 @@ export function Hero() {
         </h1>
 
         <motion.p
-          className="mx-auto mt-8 max-w-[58ch] text-[clamp(16px,1.5vw,19px)] leading-[1.65] text-mist"
+          className="mx-auto mt-8 max-w-[46ch] text-[clamp(16px,1.5vw,19px)] leading-[1.65] text-mist"
           initial={{ opacity: 0, y: reduce ? 0 : 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.75 }}
         >
-          I work across healthcare, accessibility, and human-AI interaction —
-          combining research, design, and front-end development to make support
-          systems feel more usable, humane, and real.
+          I combine training in Information Studies and Art &amp; Technology with
+          research in Health HCI. My work focuses on human-centered AI for
+          digital health, mental health, caregiving, and accessibility.
         </motion.p>
 
         <motion.div
@@ -192,16 +194,18 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.9 }}
         >
           <a
-            href="#work"
+            href="#projects"
             className="rounded-full bg-bone px-7 py-3 font-display text-sm font-semibold text-ground transition-transform duration-300 hover:scale-[1.04]"
           >
-            View my work
+            View Projects
           </a>
           <a
-            href="/contact"
+            href={getAssetPath(CV_PATH)}
+            target="_blank"
+            rel="noopener noreferrer"
             className="rounded-full border border-line px-7 py-3 font-display text-sm font-semibold text-bone transition-colors duration-300 hover:border-mist"
           >
-            Get in touch
+            Download CV
           </a>
         </motion.div>
       </div>
@@ -215,10 +219,12 @@ export function Hero() {
         Scroll to explore
       </div>
 
-      <div className="absolute bottom-8 right-6 z-[1] text-right text-[13px] leading-[1.7] text-mist md:right-[5vw]">
-        Currently
+      <div className="absolute bottom-8 right-6 z-[1] max-w-[240px] text-right text-[13px] leading-[1.7] text-mist md:right-[5vw]">
+        Current focus
         <br />
-        <span className="text-bone">Designing &amp; building AI health tools</span>
+        <span className="text-bone">
+          Health HCI, human-centered AI, and accessible digital health.
+        </span>
       </div>
     </header>
   );

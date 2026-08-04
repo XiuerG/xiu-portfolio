@@ -22,9 +22,9 @@ const body = Nunito_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Xiuer Gu — UX / Interaction Design",
+  title: "Xiuer Gu — Health HCI Researcher & Designer",
   description:
-    "Interaction designer, frontend-capable, AI-native. Selected work and case studies.",
+    "Interdisciplinary Health HCI researcher and designer working on human-centered AI for digital health, mental health, caregiving, and accessibility.",
 };
 
 export default function RootLayout({

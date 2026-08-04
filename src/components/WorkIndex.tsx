@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { projects } from "@/lib/projects";
 import { Reveal } from "@/components/motion/Reveal";
+import { SectionHeader } from "@/components/SectionHeader";
 import { getAssetPath } from "@/lib/utils";
 
 /**
@@ -14,7 +15,13 @@ import { getAssetPath } from "@/lib/utils";
  */
 export function WorkIndex() {
   return (
-    <section id="work">
+    <section id="projects" className="scroll-mt-24 pt-24 md:pt-28">
+      <SectionHeader
+        eyebrow="Selected Projects"
+        title="Selected Projects"
+        description="Research and design work across digital mental health, caregiver support, and accessibility."
+      />
+      <div className="mt-14 md:mt-16">
       {projects.map((p, i) => (
         <article
           key={p.slug}
@@ -34,14 +41,31 @@ export function WorkIndex() {
                 <h3 className="mt-4 font-display text-[clamp(34px,4.6vw,64px)] font-bold leading-[1.02] tracking-[-0.01em]">
                   {p.title}
                 </h3>
+                {p.subtitle && (
+                  <p className="mt-3 max-w-[42ch] font-display text-lg font-medium leading-snug text-bone/85">
+                    {p.subtitle}
+                  </p>
+                )}
                 <p className="mt-5 max-w-[46ch] text-[16.5px] leading-[1.65] text-mist">
                   {p.summary}
                 </p>
+                {p.tags && (
+                  <ul className="mt-6 flex flex-wrap gap-2">
+                    {p.tags.map((tag) => (
+                      <li
+                        key={tag}
+                        className="rounded-full border border-line px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-mist"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 <Link
                   href={`/work/${p.slug}`}
                   className="mt-9 inline-block rounded-full bg-bone px-7 py-3 font-display text-sm font-semibold text-ground transition-transform duration-300 hover:scale-[1.05]"
                 >
-                  View Case Study
+                  View Project
                 </Link>
               </div>
             </Reveal>
@@ -94,6 +118,7 @@ export function WorkIndex() {
           </div>
         </article>
       ))}
+      </div>
     </section>
   );
 }
