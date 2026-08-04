@@ -1,0 +1,204 @@
+@import "tailwindcss";
+
+/* Design tokens — Tailwind v4 CSS-first config.
+   Each --color-* becomes a utility (bg-ground, text-bone, border-line, …).
+   Each --font-* becomes a utility (font-display, font-mono, …).
+
+   Bold, dark product-showcase system: near-black ground with a faint
+   blueprint grid, white text, gray-#B8B8B8 secondary, warm coral accent.
+   Poppins carries the display type; Nunito Sans the body. */
+:root {
+  --color-ground: #0a0a0a; /* near-black background */
+  --color-raised: #161616; /* raised surfaces, hover fills */
+  --color-line: #272727; /* hairlines, dividers */
+  --color-mist: #b8b8b8; /* secondary / muted text */
+  --color-bone: #f7f7f7; /* primary text (near-white) */
+  --color-accent: #e0764d; /* warm coral — the one accent */
+  --color-ember: #e0764d; /* warm interaction states (same coral) */
+
+  --color-ink: #111111; /* dark surface (demo section) */
+  --color-cream: #f7f7f7; /* on-dark text */
+
+  --grid-color: rgba(255, 255, 255, 0.035);
+}
+
+.light, [data-theme="light"] {
+  --color-ground: #faf9f6; /* warm alabaster / soft cream white */
+  --color-raised: #ffffff; /* raised surfaces, cards */
+  --color-line: #e2e1dc; /* soft warm grey dividers */
+  --color-mist: #6e6d6a; /* medium warm grey text with high contrast */
+  --color-bone: #141412; /* dark warm charcoal text */
+  --color-accent: #c44f27; /* slightly deeper coral for readability */
+  --color-ember: #c44f27;
+
+  --color-ink: #faf9f6;
+  --color-cream: #141412;
+
+  --grid-color: rgba(0, 0, 0, 0.035);
+}
+
+@theme {
+  --color-ground: var(--color-ground);
+  --color-raised: var(--color-raised);
+  --color-line: var(--color-line);
+  --color-mist: var(--color-mist);
+  --color-bone: var(--color-bone);
+  --color-accent: var(--color-accent);
+  --color-ember: var(--color-ember);
+
+  --color-ink: var(--color-ink);
+  --color-cream: var(--color-cream);
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-ground);
+  /* Faint blueprint grid over the background. */
+  background-image: linear-gradient(
+      to right,
+      var(--grid-color) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 44px 44px;
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Smooth color transitions for theme switching */
+body,
+nav,
+header,
+footer,
+.bg-ground,
+.bg-raised,
+.bg-bone,
+.text-bone,
+.text-ground,
+.text-mist,
+.border-line,
+button,
+a {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, text-decoration-color 0.3s ease, fill 0.3s ease, stroke 0.3s ease;
+}
+
+::selection {
+  background: rgba(224, 118, 77, 0.35);
+  color: var(--color-bone);
+}
+
+/* Visible keyboard focus — part of the quality floor. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Shared motion keyframes (mirrors the design prototype)             */
+/* ------------------------------------------------------------------ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes simClick {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(0.45);
+  }
+}
+
+/* Auto-advance progress fill for the CoReLink step walkthrough. */
+@keyframes growLine {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Gentle vertical float for product imagery in the work banners.
+   Two phases (a/b) so layered shots drift independently; still for
+   reduced-motion users. */
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(-8px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .float-a {
+    animation: floatY 7s ease-in-out infinite;
+  }
+  .float-b {
+    animation: floatY 9s ease-in-out infinite reverse;
+  }
+}
+
+/* Hide the custom cursor ring on small / touch screens. */
+@media (max-width: 860px) {
+  .cursor-ring {
+    display: none !important;
+  }
+}
+
+/* Ambient geometric drift behind the hero. Opt-out by default for
+   reduced-motion users (animation only runs when motion is welcome). */
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(4%, -6%, 0) rotate(12deg);
+  }
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ambient-blob {
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+}
