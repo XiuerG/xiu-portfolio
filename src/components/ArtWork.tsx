@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { artworks } from "@/lib/art";
 import { projects } from "@/lib/projects";
@@ -62,26 +65,85 @@ function buildCards(): Card[] {
  */
 export function ArtWork() {
   const cards = buildCards();
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const scrollLeft = el.scrollLeft;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll <= 0) {
+      setScrollProgress(0);
+    } else {
+      setScrollProgress((scrollLeft / maxScroll) * 100);
+    }
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    handleScroll();
+    // Small delay to let browser settle rendering
+    const timer = setTimeout(handleScroll, 100);
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
+  const scroll = (direction: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const scrollAmount = direction === "left" ? -360 : 360;
+    el.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  };
 
   return (
     <section
       id="design"
       className="scroll-mt-24 border-t border-line py-24 md:py-28"
     >
-      <SectionHeader
-        eyebrow="Design & Interaction"
-        title="Design & Interaction"
-        description="Interaction design and creative work — accessibility, installations, generative pieces, and experiments."
-      />
-      <div className="mx-auto mt-12 w-full">
+      <div className="relative">
+        <SectionHeader
+          eyebrow="Design & Interaction"
+          title="Design & Interaction"
+          description="Interaction design and creative work — accessibility, installations, generative pieces, and experiments."
+        />
+
+        {/* Navigation Controls */}
+        <div className="mx-auto mt-6 flex max-w-[1200px] justify-end gap-3 px-6 md:px-10">
+          <button
+            onClick={() => scroll("left")}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-raised/40 text-bone hover:border-accent hover:text-accent transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/50"
+            aria-label="Scroll left"
+          >
+            <span className="translate-y-[-1px]">←</span>
+          </button>
+          <button
+            onClick={() => scroll("right")}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-raised/40 text-bone hover:border-accent hover:text-accent transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/50"
+            aria-label="Scroll right"
+          >
+            <span className="translate-y-[-1px]">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="mx-auto mt-8 w-full">
         <Reveal>
-          <div className="hover-pause relative w-full overflow-hidden py-4">
+          <div className="relative w-full overflow-hidden">
             {/* Ambient gradients to fade out edges */}
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-ground to-transparent md:w-24" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-ground to-transparent md:w-24" />
 
-            <div className="animate-marquee-right flex gap-6 w-max items-stretch px-6 md:px-10">
-              {[...cards, ...cards].map((card, index) => {
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="scrollbar-none flex gap-6 overflow-x-auto scroll-smooth px-6 pb-6 md:px-10"
+            >
+              {cards.map((card) => {
                 const CardInner = (
                   <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-raised/40">
                     {card.image ? (
@@ -143,7 +205,7 @@ export function ArtWork() {
                 if (card.href && card.internal) {
                   return (
                     <Link
-                      key={`${card.title}-${index}`}
+                      key={card.title}
                       href={card.href}
                       aria-label={`${card.title} — ${card.cta}`}
                       className={cardClass}
@@ -155,7 +217,7 @@ export function ArtWork() {
                 if (card.href) {
                   return (
                     <a
-                      key={`${card.title}-${index}`}
+                      key={card.title}
                       href={card.href}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -168,7 +230,7 @@ export function ArtWork() {
                 }
                 return (
                   <div
-                    key={`${card.title}-${index}`}
+                    key={card.title}
                     className="w-[280px] sm:w-[320px] md:w-[360px] shrink-0 h-full"
                   >
                     {CardInner}
@@ -179,6 +241,15 @@ export function ArtWork() {
           </div>
         </Reveal>
       </div>
+
+      {/* Progress bar */}
+      <div className="mx-auto mt-2 max-w-[1200px] px-6 md:px-10">
+        <div className="h-[2px] w-full bg-line rounded-full overflow-hidden">
+          <div
+            className="h-full bg-accent transition-all duration-150 rounded-full"
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+      </div>
     </section>
-  );
-}
+  );}
