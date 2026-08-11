@@ -53,7 +53,8 @@ export default async function CaseStudy({
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-mist">
-              {project.year} · {project.role} · {project.domain}
+              {project.caseStudy?.eyebrow ??
+                `${project.year} · ${project.role} · ${project.domain}`}
             </p>
           </Reveal>
           <Reveal delay={0.05}>
@@ -69,7 +70,17 @@ export default async function CaseStudy({
             </Reveal>
           )}
           <Reveal delay={0.1}>
-            <p className="mt-6 max-w-2xl text-lg text-mist">{project.summary}</p>
+            {project.caseStudy?.lead ? (
+              <div className="mt-6 max-w-2xl space-y-4">
+                {project.caseStudy.lead.map((p, i) => (
+                  <p key={i} className="text-lg leading-relaxed text-mist">
+                    {p}
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-6 max-w-2xl text-lg text-mist">{project.summary}</p>
+            )}
           </Reveal>
 
           {/* Key facts (rich case studies only) */}
@@ -480,6 +491,11 @@ function Block({ block, accent }: { block: CaseBlock; accent: string }) {
           className="rounded-2xl border border-line bg-raised/40 p-6 md:p-8"
           style={{ borderLeft: `3px solid ${accent}` }}
         >
+          {block.title && (
+            <h3 className="mb-4 font-display text-xl font-semibold leading-snug">
+              {block.title}
+            </h3>
+          )}
           <div className="space-y-4">
             {block.body.map((p, i) => (
               <p key={i} className="text-[15px] leading-relaxed text-bone/90">

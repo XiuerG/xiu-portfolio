@@ -4,13 +4,14 @@ import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { CV_PATH } from "@/lib/site";
 import { getAssetPath } from "@/lib/utils";
+import { TypingRole } from "@/components/TypingRole";
 
-/** Headline, split into fixed display lines. `em` words render in italic terracotta. */
-const HEADLINE_LINES: { t: string; em?: boolean }[][] = [
-  [{ t: "I" }, { t: "design" }, { t: "tools" }],
-  [{ t: "that" }, { t: "remember" }],
-  [{ t: "there" }, { t: "is" }, { t: "a" }, { t: "person", em: true }],
-  [{ t: "on" }, { t: "the" }, { t: "other" }, { t: "side." }],
+/** Section anchors mirrored as scroll dots in the hero's right-side visual. */
+const SECTION_DOTS = [
+  { id: "about", label: "About" },
+  { id: "research", label: "Research Work" },
+  { id: "design", label: "Design & Interaction" },
+  { id: "contact", label: "Contact" },
 ];
 
 /**
@@ -121,8 +122,6 @@ export function Hero() {
     };
   }, [reduce]);
 
-  let wordIndex = 0;
-
   return (
     <header
       id="top"
@@ -134,70 +133,48 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 z-0 h-full w-full"
       />
 
-      <div className="relative z-[1] mx-auto w-full max-w-[1120px] text-center">
+      <div className="relative z-[1] mx-auto grid w-full max-w-[1200px] items-center gap-10 md:grid-cols-[1.05fr_0.95fr] md:gap-16">
+       <div className="text-left">
+        <motion.h1
+          className="m-0 font-display text-[clamp(52px,8.5vw,112px)] font-bold leading-[0.98] tracking-[-0.03em]"
+          initial={{ opacity: 0, y: reduce ? 0 : 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          Xiuer&nbsp;Gu
+        </motion.h1>
+
         <motion.div
-          className="mb-6 font-mono text-[clamp(11px,1.1vw,13px)] font-semibold uppercase tracking-[0.22em] text-accent"
+          className="mt-5 flex min-h-[1.6em] items-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, delay: 0.35 }}
         >
-          Health HCI Researcher &amp; Designer
+          <TypingRole />
         </motion.div>
 
-        <h1 className="m-0 font-display text-[clamp(36px,6.2vw,84px)] font-bold leading-[1.08] tracking-[-0.02em]">
-          {HEADLINE_LINES.map((line, li) => (
-            <span key={li} className="block">
-              {line.map((wd) => {
-                const i = wordIndex++;
-                return (
-                  <span
-                    key={i}
-                    className="inline-block overflow-hidden align-top"
-                  >
-                    <motion.span
-                      className={
-                        "inline-block" + (wd.em ? " text-accent" : "")
-                      }
-                      initial={{ opacity: 0, y: reduce ? "0em" : "0.72em" }}
-                      animate={{ opacity: 1, y: "0em" }}
-                      transition={{
-                        duration: 0.7,
-                        delay: reduce ? 0 : 0.15 + i * 0.05,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                    >
-                      {wd.t}
-                      {"\u00A0"}
-                    </motion.span>
-                  </span>
-                );
-              })}
-            </span>
-          ))}
-        </h1>
-
         <motion.p
-          className="mx-auto mt-8 max-w-[46ch] text-[clamp(16px,1.5vw,19px)] leading-[1.65] text-mist"
+          className="mt-8 max-w-[48ch] text-[clamp(16px,1.5vw,18px)] leading-[1.65] text-mist"
           initial={{ opacity: 0, y: reduce ? 0 : 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.75 }}
         >
-          I combine training in Information Studies and Art &amp; Technology with
-          research in Health HCI. My work focuses on human-centered AI for
-          digital health, mental health, caregiving, and accessibility.
+          Combining Information Studies and Art &amp; Technology to research,
+          design, and build more humane and accessible digital health
+          technologies.
         </motion.p>
 
         <motion.div
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+          className="mt-10 flex flex-wrap items-center justify-start gap-4"
           initial={{ opacity: 0, y: reduce ? 0 : 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.9 }}
         >
           <a
-            href="#projects"
+            href="#research"
             className="rounded-full bg-bone px-7 py-3 font-display text-sm font-semibold text-ground transition-transform duration-300 hover:scale-[1.04]"
           >
-            View Projects
+            View Research
           </a>
           <a
             href={getAssetPath(CV_PATH)}
@@ -208,6 +185,34 @@ export function Hero() {
             Download CV
           </a>
         </motion.div>
+       </div>
+
+        {/* Right: ambient accent glow + scroll dots — the visual half. */}
+        <div className="relative hidden min-h-[420px] md:block" aria-hidden>
+          <span
+            className="ambient-blob"
+            style={{
+              background: "var(--color-accent)",
+              width: "clamp(280px, 30vw, 460px)",
+              height: "clamp(280px, 30vw, 460px)",
+              right: "4%",
+              top: "50%",
+              transform: "translateY(-50%)",
+            }}
+          />
+          <ul className="absolute right-2 top-1/2 flex -translate-y-1/2 flex-col gap-3">
+            {SECTION_DOTS.map((s, i) => (
+              <li key={s.id}>
+                <a
+                  href={`#${s.id}`}
+                  aria-label={s.label}
+                  className="block h-2 w-2 rounded-full border border-mist/60 transition-colors hover:bg-accent"
+                  style={i === 0 ? { background: "var(--color-accent)", borderColor: "transparent" } : undefined}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <div className="absolute bottom-8 left-6 z-[1] flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.14em] text-mist md:left-[5vw]">

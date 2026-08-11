@@ -1,5 +1,7 @@
 export type Publication = {
   title: string;
+  /** Research theme used to group the card in the Research Work section. */
+  category?: string;
   /** Authors as a single string; use † markers for equal contribution. */
   authors: string;
   /** Venue or publication status (journal name, "Preprint", etc.). */
@@ -21,6 +23,7 @@ export const publications: Publication[] = [
   {
     title:
       "Same Prompt, Different Care? Evaluating Inequities in AI-Generated Mental Health Support for Immigrant Communities",
+    category: "Digital Health",
     authors: "Cheng Chow†, Xiuer Gu†",
     venue: "Journal of the Society for Social Work and Research",
     year: "2026",
@@ -38,6 +41,7 @@ export const publications: Publication[] = [
   {
     title:
       "HieroAction: Hierarchically Guided VLM for Fine-Grained Action Analysis",
+    category: "Machine Learning & AI Research",
     authors: "J. Wu, Xiuer Gu, et al.",
     venue: "Preprint",
     year: "2025",

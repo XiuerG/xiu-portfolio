@@ -65,7 +65,7 @@ export const stances: Stance[] = [
       "trauma", "wet",
     ],
     content:
-      "That's actually her strongest thread. WET Guard is a safety-aware research prototype for Written Exposure Therapy — a digital mental health intervention designed to support treatment without replacing clinical judgment. CoReLink carries the thread into caregiving: a human-centered AI prototype that turns caregiver narratives into structured, actionable resource recommendations. And Jasmine's Beat was a WCAG 2.2 accessibility evaluation and redesign. Research-driven, lowering barriers, high-stakes care — that's where she leans. Both health projects are prototypes prepared for future evaluation, not clinically validated.",
+      "That's actually her strongest thread. WET Guard is an interactive research interface for an AI-based Written Exposure Therapy system — it simulates and evaluates therapist–patient agent sessions; her part was the application and interaction layer, not the underlying models. CoReLink carries the thread into caregiving: a human-centered AI prototype that turns caregiver narratives into structured, actionable resource recommendations. And Jasmine's Beat was a WCAG 2.2 accessibility evaluation and redesign. Research-driven, lowering barriers, high-stakes care — that's where she leans. These are research prototypes prepared for future evaluation, not clinically validated.",
     relatedSlugs: ["wet-guard", "corelink"],
   },
   {

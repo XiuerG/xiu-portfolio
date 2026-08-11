@@ -1,83 +1,79 @@
-import { SectionHeader } from "@/components/SectionHeader";
 import { Reveal } from "@/components/motion/Reveal";
 
-const paragraphs = [
-  "I am an interdisciplinary Health HCI researcher and designer with training in Information Studies and Art & Technology.",
-  "My work explores how human-centered AI and digital health technologies can better support people navigating complex, sensitive, and often inaccessible care contexts.",
-  "I am particularly interested in digital mental health, caregiver support, accessible technologies, and the design and evaluation of AI-enabled health systems.",
-  "My background allows me to work across research, interaction design, and front-end prototyping — from framing a problem and analyzing user needs to building systems for future evaluation.",
+const tagline =
+  "My research investigates how human needs, professional practices, and social values can inform the design of responsible AI-enabled interactive systems.";
+
+const background = [
+  {
+    degree: "M.S. in Information Studies",
+    org: "The University of Texas at Austin",
+  },
+  {
+    degree: "B.F.A. in Art & Technology",
+    org: "The Ohio State University",
+  },
 ];
 
-const groups: { heading: string; items: string[] }[] = [
-  {
-    heading: "Research Interests",
-    items: ["Health HCI", "Human-Centered AI", "Digital Health", "Accessibility"],
-  },
-  {
-    heading: "Methods",
-    items: [
-      "Qualitative Interviews",
-      "Thematic Analysis",
-      "Usability Evaluation",
-      "Accessibility Evaluation",
-      "Mixed-Methods Research",
-    ],
-  },
-  {
-    heading: "Tools",
-    items: [
-      "Figma",
-      "React / Next.js",
-      "Python",
-      "JavaScript",
-      "Unity",
-      "TouchDesigner",
-    ],
-  },
+const detail = [
+  "With a growing focus on digital health, I work across mental health, dementia caregiving, and accessibility. My approach combines qualitative HCI research, interaction design, and front-end developing to examine how technologies can be made more usable, inclusive, and accountable to the people they support.",
 ];
 
 /**
- * About — research positioning (not a plain designer bio), followed by three
- * compact groups: Research Interests, Methods, and Tools.
+ * About — laid out as a code block (`About { … }`): a short tagline over the
+ * educational background on the left, the fuller description on the right.
  */
 export function AboutSection() {
   return (
-    <section id="about" className="scroll-mt-24 border-t border-line py-24 md:py-28">
-      <SectionHeader eyebrow="About" title="About" />
-      <div className="mx-auto mt-10 max-w-[1200px] px-6 md:px-10">
-        <div className="grid gap-14 md:grid-cols-[1.1fr_0.9fr] md:gap-20">
+    <section
+      id="about"
+      className="scroll-mt-24 border-t border-line px-6 py-24 md:px-10 md:py-28"
+    >
+      <div className="mx-auto max-w-[1200px]">
+        <Reveal>
+          <h2 className="font-display text-[clamp(30px,3.6vw,44px)] font-bold tracking-tight">
+            About
+          </h2>
+        </Reveal>
+
+        <div className="mt-12 grid gap-12 md:grid-cols-2 md:gap-16">
+          {/* Left — tagline over background */}
           <Reveal>
+            <div className="flex h-full flex-col justify-between gap-12">
+              <p className="text-xl font-medium leading-snug text-bone md:text-2xl">
+                {tagline}
+              </p>
+              <div>
+                <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+                  Education
+                </h3>
+                <ul className="mt-4 space-y-4">
+                  {background.map((b) => (
+                    <li key={b.degree}>
+                      <p className="font-display text-[17px] font-semibold leading-snug">
+                        {b.org}
+                      </p>
+                      <p className="mt-0.5 font-display text-[15px] font-medium leading-snug text-bone/75">
+                        {b.degree}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* Right — detailed description, centered against the left column */}
+          <Reveal delay={0.08} className="flex flex-col justify-center">
             <div className="space-y-5">
-              {paragraphs.map((p, i) => (
-                <p key={i} className="text-lg leading-relaxed text-bone/90">
+              {detail.map((p, i) => (
+                <p key={i} className="text-lg leading-relaxed text-mist">
                   {p}
                 </p>
               ))}
             </div>
           </Reveal>
-
-          <Reveal delay={0.08}>
-            <div className="space-y-8">
-              {groups.map((group) => (
-                <div key={group.heading}>
-                  <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-                    {group.heading}
-                  </h3>
-                  <ul className="mt-4 flex flex-wrap gap-2">
-                    {group.items.map((item) => (
-                      <li
-                        key={item}
-                        className="rounded-full border border-line px-3 py-1.5 text-sm text-bone/90"
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </Reveal>
         </div>
+
       </div>
     </section>
   );

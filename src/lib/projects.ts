@@ -111,6 +111,10 @@ export type CaseSection = {
 /** Rich, long-form case study. Projects without one fall back to the
  *  short overview/problem/approach/outcome template. */
 export type CaseStudy = {
+  /** Optional eyebrow line above the title (overrides year · role · domain). */
+  eyebrow?: string;
+  /** Optional multi-paragraph hero description (overrides `summary`). */
+  lead?: string[];
   /** Key facts shown under the title (Role, Timeline, Team, Tools…). */
   meta: { label: string; value: string }[];
   /** Hero image (Before/After, product shot). Placeholder until `src` is set. */
@@ -123,6 +127,8 @@ export type CaseStudy = {
 export type Project = {
   slug: string;
   title: string;
+  /** Research theme used to group the card in the Research Work section. */
+  category?: string;
   /** Descriptive subtitle shown under the title on the card + case study. */
   subtitle?: string;
   year: string;
@@ -130,6 +136,14 @@ export type Project = {
   domain: string;
   /** Topic tags shown on the homepage project card. */
   tags?: string[];
+  /** Concise, research-focused description for the homepage card. Falls back
+   *  to `summary`. Kept separate so the case study header stays untouched. */
+  cardDescription?: string;
+  /** Up to 3 key research tags for the homepage card (overrides `tags`). */
+  cardTags?: string[];
+  /** Role + project-type line for the homepage card, e.g.
+   *  "UX & Front-end Lead · Research Prototype". Falls back to `role`. */
+  cardRole?: string;
   /** One-line summary shown in the index and case study header. */
   summary: string;
   /** Per-project theme color used for the cover block + section accents. */
@@ -152,7 +166,9 @@ export const projects: Project[] = [
   {
     slug: "wet-guard",
     title: "WET Guard",
-    subtitle: "Human-Centered Digital Support for Written Exposure Therapy",
+    category: "Digital Health",
+    subtitle:
+      "An Interactive Research Interface for AI-Based Written Exposure Therapy Simulation and Evaluation",
     year: "2026",
     role: "Interaction Design · Front-End Prototyping",
     domain: "Digital Mental Health · Health HCI",
@@ -162,321 +178,234 @@ export const projects: Project[] = [
       "Safety-Aware Interaction",
       "Front-End Prototyping",
     ],
+    cardDescription:
+      "An interactive research interface for simulating and evaluating AI-based Written Exposure Therapy sessions.",
+    cardTags: ["Health HCI", "Human-AI Interaction", "Research Tool"],
+    cardRole: "Interaction Design & Front-End Lead · Research Prototype",
     summary:
-      "Translating Written Exposure Therapy into a safety-aware digital intervention that supports treatment without replacing clinical judgment.",
+      "An interactive research interface for AI-based Written Exposure Therapy simulation and evaluation.",
     accent: "#84b59f",
     cover: {
       src: "/wetguard/console-session.png",
-      alt: "WET Guard therapist console — live session with real-time risk monitoring",
+      alt: "WET Guard research console — a simulated therapist-agent and patient-agent session with researcher controls",
     },
     overview:
-      "An AI therapy engine for Written Exposure Therapy. A LangGraph pipeline delivers the manualized protocol — every patient message passes a context gate and a safety gate before the therapist agent may reply — with knowledge-graph memory across sessions and an eight-metric evaluation harness. I designed and built the therapist console, the patient app, and the AI system behind them.",
+      "An interactive research interface for an AI-based Written Exposure Therapy system. The broader system simulates conversations between therapist and patient agents and evaluates the resulting transcripts against WET guidelines. My contribution was the application and interaction layer — workflow analysis, information architecture, interaction design, front-end implementation, and integration with existing back-end services. I did not develop the underlying models, agents, retrieval pipeline, or evaluation metrics.",
     problem:
-      "WET works because it is manualized — a five-session protocol with a fixed script and checkpoints. That same structure makes it expensive to deliver: every session asks the therapist to recite the script faithfully, pause on cue, watch every reply for risk, document outcomes, and supervise trainees. The manual scales; therapist hours don't.",
+      "The existing research pipeline connected session configuration, agent-based conversation generation, transcript storage, and automated evaluation — but there was no coherent way to operate, observe, and review a simulated session as a research process.",
     approach: [
-      "Treated the WET manual as a spec: the agent delivers the script and its checkpoints, while clinical judgment stays human.",
-      "Put a safety gate in front of the therapist agent — every message is risk-classified first, and moderate-or-higher risk escalates instead of getting a reply.",
-      "Built the evaluation harness before polishing the prompts — eight weighted protocol metrics make every change measurable.",
+      "Analyzed the research workflow and organized the application around four stages: configure, generate, review, evaluate.",
+      "Designed the simulated-session experience for observation, keeping agent dialogue, researcher controls, and system status distinct.",
+      "Implemented the front-end and integrated it with existing session, storage, and evaluation services.",
     ],
     outcome: [
-      "A working two-surface product — therapist console and patient app — on a FastAPI + LangGraph backend with knowledge-graph memory.",
-      "Sessions that end in evidence: AI narrative summaries scored on eight protocol metrics, benchmarked against ground-truth transcripts.",
+      "A working prototype connecting session preparation, simulated therapist–patient dialogue, transcript review, and available research outputs within one application workflow.",
+      "A foundation for future research on protocol adherence, simulated interaction patterns, and the usability of AI-based therapy simulation tools.",
     ],
     caseStudy: {
+      eyebrow: "Health HCI · Human-Centered AI · Research Tool",
+      lead: [
+        "WET Guard is an interactive prototype developed for an AI-based Written Exposure Therapy research system. The broader system simulates conversations between therapist and patient agents and evaluates the resulting transcripts using WET guidelines and protocol-related metrics.",
+        "My contribution focused on translating the existing research pipeline into a coherent application through workflow analysis, interaction design, front-end development, and back-end integration.",
+      ],
       meta: [
-        { label: "Role", value: "UX Designer · Full-stack Developer · AI Systems" },
-        { label: "Timeline", value: "16 Weeks" },
-        { label: "Stack", value: "React · FastAPI · LangGraph · DSPy · FAISS RAG" },
+        { label: "Role", value: "Interaction Design and Front-End Lead" },
+        { label: "Timeline", value: "Spring 2026" },
+        { label: "Institution", value: "The University of Texas at Austin" },
+        { label: "Supervisor", value: "Dr. Ying Ding" },
+        { label: "Status", value: "Interactive Research Prototype" },
       ],
       hero: {
         src: "/wetguard/console-start.png",
-        alt: "WET Guard — AI-guided Written Exposure Therapy console",
+        alt: "WET Guard research console — the session overview screen of the AI-based Written Exposure Therapy research interface",
         frame: "macbook",
       },
       heroNote:
-        "How might AI support therapists throughout the therapy workflow — without replacing clinical judgment?",
+        "How can an existing AI-based WET research pipeline be translated into an application that makes simulated sessions easier to operate, observe, and review?",
       sections: [
         {
-          id: "research-overview",
-          label: "Research Overview",
-          blocks: [
-            {
-              kind: "researchOverview",
-              entries: [
-                {
-                  label: "Research Question",
-                  value:
-                    "How can a digital system support Written Exposure Therapy while preserving treatment fidelity, patient safety, and clinical judgment?",
-                },
-                {
-                  label: "Context",
-                  value:
-                    "A digital mental health intervention for people experiencing trauma-related symptoms.",
-                },
-                {
-                  label: "Methods",
-                  value: [
-                    "Protocol Translation",
-                    "Workflow Analysis",
-                    "Safety-State Modeling",
-                    "Interaction Design",
-                    "Front-End Prototyping",
-                  ],
-                },
-                { label: "My Role", value: "Interaction Design and Front-End Lead" },
-                { label: "Supervision", value: "Supervised by Dr. Ying Ding" },
-                {
-                  label: "Status",
-                  value:
-                    "Interactive research prototype prepared for future evaluation.",
-                },
-              ],
-            },
-          ],
-        },
-        {
           id: "context",
-          label: "Context",
+          label: "Project Context",
           blocks: [
             {
               kind: "prose",
-              lead: "Therapy is about people — not paperwork.",
+              lead: "Using WET as a structured context for AI research",
               body: [
-                "Written Exposure Therapy (WET) is a five-session, evidence-based treatment for PTSD with one defining property: it is manualized. Every session follows a written script, with fixed checkpoints where the therapist pauses, checks in, and assesses risk.",
-                "That structure is why it works — and why it is hard to scale. Each session asks the therapist to deliver the script faithfully, stop on cue, watch every reply for warning signs, document the outcome, and supervise trainees doing the same. The manual scales; therapist hours don't.",
+                "Written Exposure Therapy follows a defined treatment protocol, which makes it a useful context for studying how AI-generated therapist behavior follows, interprets, or deviates from established guidelines.",
+                "The broader research system uses separate therapist and patient agents to generate simulated sessions. It also includes session orchestration, guideline retrieval, transcript evaluation, and session persistence.",
+                "Its intended research applications include protocol-adherence studies, analysis of simulated interaction patterns, comparison of conversational conditions, and exploratory training research — research directions rather than established claims of clinical effectiveness.",
               ],
-            },
-            {
-              kind: "callout",
-              text: "How might AI support therapists throughout the therapy workflow — without replacing clinical judgment?",
             },
           ],
         },
         {
-          id: "insight",
-          label: "The Insight",
+          id: "challenge",
+          label: "The Challenge",
           blocks: [
             {
               kind: "prose",
-              lead: "The script is the opportunity.",
+              lead: "Turning an AI pipeline into a usable research workflow",
               body: [
-                "Because WET is manualized, most of a session is already specified: what to say, where to stop, what must be assessed. That is exactly the part an AI agent can carry reliably — and exactly the part that burns therapist hours. The judgment calls stay human.",
-                "Four principles shaped the system.",
+                "The existing system connected session configuration, agent-based conversation generation, transcript storage, and automated evaluation.",
+                "The interaction challenge was not simply to display a chatbot. Researchers needed to understand what conditions produced a session, observe the interaction between two agents, review the resulting transcript, and connect available evaluation results with the same research run.",
+                "I organized the application around four stages.",
+              ],
+            },
+            {
+              kind: "flow",
+              steps: [
+                "Configure — define the conditions for a simulated session",
+                "Generate — run the therapist–patient agent conversation",
+                "Review — read and interpret the resulting transcript",
+                "Evaluate — connect available protocol metrics to the same run",
+              ],
+            },
+          ],
+        },
+        {
+          id: "role",
+          label: "My Role",
+          blocks: [
+            {
+              kind: "prose",
+              lead: "Connecting the research pipeline to the application experience",
+              body: [
+                "My primary contribution was at the application and interaction layer. I mapped the research workflow, organized the information architecture, designed the simulated-session experience, implemented reusable front-end components, and connected the interface with existing back-end services.",
+                "The underlying language models, agent algorithms, retrieval pipeline, and automated evaluation metrics were developed collaboratively and were not the focus of my role. My responsibility was to make the existing system accessible through a coherent research application.",
+              ],
+            },
+            {
+              kind: "list",
+              items: [
+                "Formative research and requirement clarification",
+                "Research workflow analysis",
+                "Information architecture",
+                "Interaction design",
+                "Front-end implementation",
+                "Front-end–back-end integration",
+              ],
+            },
+          ],
+        },
+        {
+          id: "decisions",
+          label: "Key Design Decisions",
+          blocks: [
+            {
+              kind: "feature",
+              eyebrow: "Decision 01",
+              title: "Designing for observation, not conversation",
+              body: [
+                "Unlike a conventional chatbot, the primary user observes a conversation between simulated therapist and patient agents.",
+                "I designed clear distinctions among agent dialogue, researcher controls, system messages, and generation status, so a session can be followed as a research process rather than experienced as a consumer chat.",
+              ],
+              points: [
+                "Therapist-agent dialogue kept distinct from patient-agent dialogue",
+                "Session progress and generation status kept visible",
+                "Researcher controls separated from system messages",
+              ],
+              figure: {
+                src: "/wetguard/console-session.png",
+                alt: "WET Guard research console — a simulated therapist-agent and patient-agent conversation, with session status and researcher controls",
+              },
+            },
+            {
+              kind: "feature",
+              eyebrow: "Decision 02",
+              title: "Preserving experimental context",
+              body: [
+                "A generated transcript is hard to interpret when the conditions that produced it are missing.",
+                "I connected session configuration, generated dialogue, metadata, and available outputs within the same session record, so the design supports revisiting and interpreting previous runs.",
+              ],
+              figure: {
+                src: "/wetguard/console-start.png",
+                alt: "WET Guard research console — the session configuration screen that defines the conditions for a simulated run",
+              },
+              flip: true,
+            },
+            {
+              kind: "feature",
+              eyebrow: "Decision 03",
+              title: "Presenting evaluation as research output",
+              body: [
+                "The broader system evaluates transcripts using protocol-related guidelines and metrics. I did not develop these metrics; I worked on how the available outputs were represented within the application.",
+                "The interface distinguishes generated dialogue, automated evaluation, and researcher interpretation, rather than presenting scores as definitive judgments of therapeutic quality.",
+              ],
+              figure: {
+                src: "/wetguard/session-summary.png",
+                alt: "WET Guard research console — a session summary presenting automated evaluation output alongside the generated transcript",
+              },
+            },
+          ],
+        },
+        {
+          id: "implementation",
+          label: "Technical Implementation",
+          blocks: [
+            {
+              kind: "prose",
+              lead: "Building the application layer",
+              body: [
+                "I implemented the application interface and integrated it with the existing research back end. The harder problems were less about any single screen and more about holding the workflow together across stages.",
               ],
             },
             {
               kind: "cards",
               items: [
                 {
-                  title: "Follow the manual, verbatim",
+                  title: "Multi-stage session state",
                   description:
-                    "The agent delivers the WET script with its checkpoints — not improvised, therapy-flavored chat.",
+                    "Maintain continuity across setup, active generation, transcript review, and post-session outputs.",
                 },
                 {
-                  title: "Check risk before every reply",
+                  title: "Variable AI-generated content",
                   description:
-                    "Every patient message passes a safety gate before the therapist agent is allowed to respond.",
+                    "Support responses with different lengths, structures, and generation times without disrupting readability.",
                 },
                 {
-                  title: "Remember across sessions",
+                  title: "Asynchronous feedback",
                   description:
-                    "A knowledge-graph memory carries what matters between the five sessions, so patients never repeat themselves.",
+                    "Communicate loading, generation, completion, unavailable, and error states clearly.",
                 },
                 {
-                  title: "Make quality measurable",
+                  title: "Front-end–back-end integration",
                   description:
-                    "Every session is scored against the protocol — 'good' is a number, not a feeling.",
+                    "Connect user-facing actions with existing session, storage, and evaluation services.",
                 },
               ],
             },
-          ],
-        },
-        {
-          id: "how-it-works",
-          label: "How It Works",
-          blocks: [
             {
-              kind: "prose",
-              body: [
-                "Under every reply runs the same loop — a LangGraph with two gates in front of the therapist agent:",
-              ],
-            },
-            {
-              kind: "flow",
-              steps: [
-                "Patient message arrives",
-                "Context gate — summarizes the session and recalls knowledge-graph memory",
-                "Safety gate — an LLM classifier rates risk: none · low · moderate · high",
-                "Moderate or high risk escalates immediately — the therapist agent never replies",
-                "Therapist agent responds, grounded in the WET manual",
-                "The turn is logged back into memory",
-              ],
-            },
-            {
-              kind: "prose",
-              body: [
-                "The escalation path is the spine of the design: the system's most important output is knowing when not to answer.",
-              ],
-            },
-          ],
-        },
-        {
-          id: "console",
-          label: "The Therapist Console",
-          blocks: [
-            {
-              kind: "prose",
-              lead: "A workspace built around one live session.",
-              body: [
-                "The console is the clinician's home. Everything a therapist needs to run — and trust — a WET session lives on one screen: the scripted conversation in the center, and the session's vital signs alongside it.",
-              ],
-            },
-            {
-              kind: "feature",
-              eyebrow: "Run the session",
-              title: "The protocol, delivered turn by turn",
-              body: [
-                "The therapist agent walks the WET script exactly as written — psychoeducation, checkpoints, and the first writing directive — pausing at every checkpoint for the patient to respond.",
-              ],
-              points: [
-                "Live session vitals — duration and protocol step",
-                "A risk level that re-computes on every single turn",
-                "One clear action: summarize & end the session",
-              ],
-              figure: {
-                src: "/wetguard/console-session.png",
-                alt: "WET Guard console — a WET session in progress with the vitals panel",
-              },
-            },
-            {
-              kind: "feature",
-              eyebrow: "The safety gate",
-              title: "The system's most important output is knowing when not to answer",
-              body: [
-                "Every patient message is risk-classified before the therapist agent may reply. When a message crosses the threshold, the agent is held back and the session escalates to a human — no automated response is ever generated.",
-              ],
-              points: [
-                "LLM risk classifier with a deterministic rule fallback",
-                "Moderate-or-higher risk escalates instead of replying",
-                "The clinician sees exactly why, and takes over",
-              ],
-              figure: {
-                src: "/wetguard/console-escalation.png",
-                alt: "WET Guard console — the safety gate escalating a high-risk session to a human clinician",
-              },
-              flip: true,
-            },
-            {
-              kind: "feature",
-              eyebrow: "Close the loop",
-              title: "Every session ends in evidence",
-              body: [
-                "Ending a session generates an AI clinical narrative and scores the transcript against the WET protocol — with a safety trend, session identity, and one-click export to the clinical record.",
-              ],
-              points: [
-                "AI narrative summary of the session's key themes",
-                "Eight protocol metrics, benchmarked to ground truth",
-                "Export to PDF, EHR, or raw research JSON",
-              ],
-              figure: {
-                src: "/wetguard/session-summary.png",
-                alt: "WET Guard session summary — safety analysis and eight-metric protocol scoring",
-              },
-            },
-          ],
-        },
-        {
-          id: "phone",
-          label: "On the Patient's Phone",
-          blocks: [
-            {
-              kind: "gallery",
-              title: "The same protocol engine, patient-side",
-              caption:
-                "Patients meet the session on their phone — a calm conversation with the WET Guide, plus a session view that surfaces the same safety status and knowledge-graph memory the clinician sees. One backend drives both surfaces.",
-              figures: [
+              kind: "researchOverview",
+              entries: [
                 {
-                  src: "/wetguard/phone-welcome.png",
-                  alt: "WET Guard patient app — start a session",
+                  label: "System Context",
+                  value:
+                    "The broader research system included agent-based session generation, guideline retrieval, transcript evaluation, and session persistence.",
                 },
                 {
-                  src: "/wetguard/phone-session.png",
-                  alt: "WET Guard patient app — therapy session",
+                  label: "My Technical Contribution",
+                  value: [
+                    "React / JavaScript",
+                    "Front-End State Management",
+                    "API Integration",
+                    "Python Back-End Integration",
+                  ],
                 },
-                {
-                  src: "/wetguard/phone-info.png",
-                  alt: "WET Guard patient app — session info, safety status, and memory",
-                },
               ],
             },
           ],
         },
         {
-          id: "under-the-hood",
-          label: "Under the Hood",
+          id: "outcome",
+          label: "Outcome",
           blocks: [
             {
               kind: "prose",
-              lead: "The parts you don't see.",
+              lead: "An end-to-end interactive research prototype",
               body: [
-                "Most of WET Guard is invisible in a screenshot — and it is most of the product:",
-              ],
-            },
-            {
-              kind: "list",
-              items: [
-                "LangGraph orchestration — context gate → safety gate → therapist agent, every turn",
-                "Two-layer safety — an LLM risk classifier with a deterministic rule fallback, so a model outage can never silence the gate",
-                "Knowledge-graph memory — session facts stored as triplets (SQLite + FAISS), recalled with recency weighting",
-                "Guideline RAG — the official WET treatment manual, chunked and retrievable by the safety and evaluation systems",
-                "Patient simulation — cooperative, resistant, and derailing patient agents for stress-testing and therapist training",
-                "DSPy signatures — every agent behavior is a typed, testable module",
-              ],
-            },
-          ],
-        },
-        {
-          id: "measuring-success",
-          label: "Measuring Success",
-          blocks: [
-            {
-              kind: "prose",
-              lead: "Quality you can regression-test.",
-              body: [
-                "Every transcript is scored against the WET protocol on eight weighted metrics, calibrated with few-shot examples and benchmarked against ground-truth reference sessions:",
-              ],
-            },
-            {
-              kind: "list",
-              checked: true,
-              items: [
-                "Verbatim delivery · 15% — fidelity to the therapy script",
-                "Prompt adherence · 20% — follows the therapeutic guidelines",
-                "Derailment management · 20% — redirects off-topic attempts",
-                "Suicidality assessment · 15% — risk evaluated per protocol",
-                "Patient interaction · 10% — pauses for input at every checkpoint",
-                "Professional boundaries · 10% — no advice or diagnosis outside protocol",
-                "Session completion · 10% — ends with the writing directive",
-              ],
-            },
-            {
-              kind: "prose",
-              body: [
-                "The harness turns prompt changes into measurable diffs: a tweak that hurts protocol fidelity fails loudly in evaluation — before it ever reaches a patient.",
-              ],
-            },
-          ],
-        },
-        {
-          id: "reflection",
-          label: "Reflection",
-          blocks: [
-            {
-              kind: "prose",
-              lead: "The hardest feature is refusing to answer.",
-              body: [
-                "Building WET Guard taught me that in clinical AI, generation is the easy half. The real design work lives in the gates — what the system must check before it speaks, and when it must stop and hand the conversation back to a human.",
-                "It also changed how I design: the safety gate, the memory, and the evaluation harness never appear in a screenshot, and they are most of the product. Designing systems means designing what users never see.",
+                "The project resulted in a working prototype connecting session preparation, simulated therapist–patient dialogue, transcript review, and available research outputs within one application workflow.",
+                "My contribution helped move the project from a set of technical research functions toward an interface through which the system could be operated, observed, and reviewed.",
+                "The prototype provides a foundation for future research on protocol adherence, simulated interaction patterns, and the usability of AI-based therapy simulation tools.",
               ],
             },
           ],
@@ -487,69 +416,50 @@ export const projects: Project[] = [
           blocks: [
             {
               kind: "limitations",
+              title: "What this prototype does not establish",
               body: [
-                "This project produced an interactive research prototype. It has not yet been evaluated with patients or therapists, and no claims are made about clinical effectiveness.",
-                "Future work should examine usability, treatment fidelity, risk escalation, and the division of responsibility between AI support and clinical judgment.",
+                "This project remained at the research-prototype stage. It did not involve a clinical trial, formal evaluation of treatment effectiveness, validation of outcome prediction, or validation of automated metrics as clinical measures.",
+                "The prototype was not formally evaluated with patients, researchers, or therapists. The system's listed applications represent intended directions for research rather than demonstrated clinical capabilities.",
               ],
             },
           ],
         },
         {
-          id: "contribution",
-          label: "My Contribution",
+          id: "future-work",
+          label: "Future Work",
           blocks: [
             {
               kind: "prose",
+              lead: "Evaluating the research experience",
               body: [
-                "I worked across the complete product — from UX to the AI systems underneath.",
+                "Future work should examine whether researchers and therapists can understand and operate the simulation workflow, connect evaluation outputs with transcript content, and interpret the limitations of automated metrics. A formal usability study could also investigate how effectively the interface supports reviewing and comparing simulated sessions.",
               ],
             },
             {
-              kind: "columns",
-              groups: [
-                {
-                  title: "Product & UX",
-                  items: [
-                    "End-to-end workflow definition",
-                    "Therapist console & patient app design",
-                    "Risk & escalation UX",
-                    "Session summary & reporting design",
-                  ],
-                },
-                {
-                  title: "Front-end",
-                  items: [
-                    "React console + patient app",
-                    "Live session vitals & risk panel",
-                    "Session chat experience",
-                    "Dark mode & responsive layouts",
-                  ],
-                },
-                {
-                  title: "AI Systems",
-                  items: [
-                    "LangGraph orchestration",
-                    "Two-layer safety gate with escalation",
-                    "Knowledge-graph memory (SQLite + FAISS)",
-                    "WET-manual RAG",
-                  ],
-                },
-                {
-                  title: "Evaluation",
-                  items: [
-                    "8-metric protocol scoring harness",
-                    "Few-shot calibrated judges (DSPy)",
-                    "Patient simulators for stress-testing",
-                    "BLEU / ROUGE benchmarking",
-                  ],
-                },
+              kind: "list",
+              items: [
+                "Can researchers understand how each simulated session was configured?",
+                "Can users connect evaluation outputs with the relevant transcript content?",
+                "Do users correctly interpret the limitations of automated scores?",
+              ],
+            },
+          ],
+        },
+        {
+          id: "reflection",
+          label: "Reflection",
+          blocks: [
+            {
+              kind: "prose",
+              lead: "What I learned",
+              body: [
+                "This project strengthened my interest in the human-centered design of AI research systems.",
+                "My contribution was not the development of the underlying models. It was translating a technically complex research pipeline into an application through which researchers could operate, observe, and review the system's outputs.",
               ],
             },
             {
               kind: "prose",
-              body: [
-                "Every surface in this case study — and the system behind it — was designed and built by me.",
-              ],
+              lead: "AI research systems need interfaces that make their processes understandable and their outputs easier to examine.",
             },
           ],
         },
@@ -559,6 +469,7 @@ export const projects: Project[] = [
   {
     slug: "corelink",
     title: "CoReLink",
+    category: "Digital Health",
     subtitle: "AI Resource Navigation for Dementia Caregivers",
     year: "2025",
     role: "Research Framing · Interaction Design · Front-End",
@@ -569,6 +480,10 @@ export const projects: Project[] = [
       "Human-Centered AI",
       "Digital Health",
     ],
+    cardDescription:
+      "An AI resource-navigation prototype that turns caregiver narratives into structured, actionable care recommendations.",
+    cardTags: ["Dementia Care", "Caregiver Support", "Human-AI Interaction"],
+    cardRole: "Research & Front-end Lead · End-to-End Prototype",
     summary:
       "Turning caregiver narratives and clinical notes into structured, actionable resource recommendations for care teams.",
     accent: "#4e8d76",
@@ -817,6 +732,7 @@ export const projects: Project[] = [
   {
     slug: "jasmines-beat",
     title: "Jasmine's Beat",
+    category: "Design & Interaction",
     subtitle:
       "Accessibility Evaluation and Redesign of an Adaptive Dance Platform",
     year: "2023",
@@ -828,6 +744,10 @@ export const projects: Project[] = [
       "WCAG 2.2",
       "Interaction Design",
     ],
+    cardDescription:
+      "A multi-method WCAG 2.2 accessibility evaluation and redesign of key journeys for an adaptive dance community.",
+    cardTags: ["Accessibility", "Inclusive Design", "WCAG 2.2"],
+    cardRole: "UX Research & Interaction Design · Evaluation",
     summary:
       "Evaluating and redesigning key digital journeys for an adaptive dance community using WCAG 2.2.",
     accent: "#5c93a0",
@@ -1145,7 +1065,6 @@ export const projects: Project[] = [
           blocks: [
             {
               kind: "limitations",
-              title: "Project Scope",
               body: [
                 "This project was a multi-method accessibility evaluation and redesign exercise. It did not include a participant-based study with disabled users.",
               ],

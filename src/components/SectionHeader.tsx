@@ -3,7 +3,7 @@ import { Reveal } from "@/components/motion/Reveal";
 /**
  * Shared section opener — an eyebrow label, a display title, and an optional
  * one-line description. Keeps vertical rhythm and typography consistent across
- * the homepage sections (Projects, Publications, Experience, About).
+ * the homepage sections (Projects, Publications, Art & Interaction).
  */
 export function SectionHeader({
   eyebrow,

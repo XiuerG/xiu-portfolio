@@ -10,12 +10,11 @@ import { getAssetPath } from "@/lib/utils";
 type MenuLink = { href: string; label: string; external?: boolean };
 
 const menuLinks: MenuLink[] = [
-  { href: "/#projects", label: "Projects" },
-  { href: "/#publications", label: "Publications" },
-  { href: "/#experience", label: "Experience" },
   { href: "/#about", label: "About" },
-  { href: getAssetPath(CV_PATH), label: "CV", external: true },
+  { href: "/#research", label: "Research" },
+  { href: "/#design", label: "Design & Interaction" },
   { href: "/#contact", label: "Contact" },
+  { href: getAssetPath(CV_PATH), label: "CV", external: true },
 ];
 
 /**
@@ -65,7 +64,7 @@ export function SiteNav() {
                   const inner = (
                     <>
                       <span className="font-mono text-sm text-mist tabular-nums">
-                        {String(i + 1).padStart(2, "0")}
+                        {String(i).padStart(2, "0")}
                       </span>
                       <span className="font-display text-[clamp(36px,7vw,64px)] font-bold leading-none transition-colors duration-300 group-hover:text-accent">
                         {l.label}
@@ -135,22 +134,46 @@ export function SiteNav() {
           >
             <Magnetic>Xiuer&nbsp;Gu</Magnetic>
           </Link>
+
+          {/* Inline numbered nav (desktop) — the reference's top-bar structure. */}
+          <nav
+            aria-label="Primary"
+            className="hidden items-center lg:flex"
+          >
+            {menuLinks.map((l, i) => {
+              const content = (
+                <span className="group inline-flex items-baseline gap-1.5 font-display text-[12.5px] font-semibold uppercase tracking-[0.1em]">
+                  <span className="text-accent tabular-nums">{i}.</span>
+                  <span className="text-bone transition-colors group-hover:text-accent">
+                    {l.label}
+                  </span>
+                </span>
+              );
+              return (
+                <span key={l.href} className="flex items-center">
+                  {i > 0 && (
+                    <span className="mx-4 h-3 w-px bg-line" aria-hidden />
+                  )}
+                  {l.external ? (
+                    <a href={l.href} target="_blank" rel="noopener noreferrer">
+                      {content}
+                    </a>
+                  ) : (
+                    <Link href={l.href}>{content}</Link>
+                  )}
+                </span>
+              );
+            })}
+          </nav>
+
           <div className="flex items-center gap-3 md:gap-4">
             <ThemeToggle />
-            <a
-              href={getAssetPath(CV_PATH)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden rounded-full bg-bone px-5 py-2 font-display text-sm font-semibold text-ground transition-transform duration-300 hover:scale-[1.05] sm:inline-block"
-            >
-              Download CV
-            </a>
             <button
               type="button"
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="relative flex h-11 w-11 items-center justify-center rounded-full border border-line bg-raised/60 transition-colors hover:border-mist"
+              className="relative flex h-11 w-11 items-center justify-center rounded-full border border-line bg-raised/60 transition-colors hover:border-mist lg:hidden"
             >
               <span
                 className={`absolute h-[2px] w-5 rounded-full bg-bone transition-transform duration-300 ${
