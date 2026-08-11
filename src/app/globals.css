@@ -52,6 +52,17 @@
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+
+  --animate-marquee-right: marquee-right 40s linear infinite;
+
+  @keyframes marquee-right {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
 }
 
 html {
@@ -201,4 +212,9 @@ a {
   .ambient-blob {
     animation: drift 18s ease-in-out infinite alternate;
   }
+}
+
+/* Pause marquee animation on hover */
+.hover-pause:hover .animate-marquee-right {
+  animation-play-state: paused;
 }

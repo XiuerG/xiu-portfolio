@@ -73,95 +73,111 @@ export function ArtWork() {
         title="Design & Interaction"
         description="Interaction design and creative work — accessibility, installations, generative pieces, and experiments."
       />
-      <div className="mx-auto mt-12 max-w-[1200px] px-6 md:px-10">
-        <div className="grid gap-6 sm:grid-cols-2">
-          {cards.map((card) => {
-            const CardInner = (
-              <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-raised/40">
-                {card.image ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={getAssetPath(card.image)}
-                    alt={card.title}
-                    className="aspect-[16/10] w-full object-cover transition-transform duration-300 ease-out motion-safe:group-hover:scale-[1.04]"
-                  />
-                ) : (
-                  <div
-                    role="img"
-                    aria-label={card.title}
-                    className="flex aspect-[16/10] w-full items-center justify-center p-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.16em] text-bone/70"
-                    style={{
-                      background: `linear-gradient(135deg, ${card.accent}52, ${card.accent}14)`,
-                    }}
-                  >
-                    {card.category}
-                  </div>
-                )}
-                <div className="flex flex-1 flex-col p-6">
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-                    <h3 className="font-display text-xl font-semibold leading-snug transition-colors duration-200 group-hover:text-accent">
-                      {card.title}
-                    </h3>
-                    {card.year && (
-                      <span className="font-mono text-xs text-mist">
-                        {card.year}
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-mist">
-                    {card.category}
-                  </p>
-                  {card.description && (
-                    <p className="mt-3 text-[15px] leading-relaxed text-mist">
-                      {card.description}
-                    </p>
-                  )}
-                  {card.href && card.cta && (
-                    <span className="mt-4 inline-flex items-center gap-1.5 font-display text-sm font-semibold text-accent">
-                      {card.cta}
-                      <span
-                        aria-hidden
-                        className="transition-transform duration-200 motion-safe:group-hover:translate-x-1"
-                      >
-                        {card.internal ? "→" : "↗"}
-                      </span>
-                    </span>
-                  )}
-                </div>
-              </article>
-            );
+      <div className="mx-auto mt-12 w-full">
+        <Reveal>
+          <div className="hover-pause relative w-full overflow-hidden py-4">
+            {/* Ambient gradients to fade out edges */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-ground to-transparent md:w-24" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-ground to-transparent md:w-24" />
 
-            if (card.href && card.internal) {
-              return (
-                <Reveal key={card.title}>
-                  <Link
-                    href={card.href}
-                    aria-label={`${card.title} — ${card.cta}`}
-                    className="block h-full rounded-2xl transition-transform duration-300 hover:-translate-y-1"
+            <div className="animate-marquee-right flex gap-6 w-max items-stretch px-6 md:px-10">
+              {[...cards, ...cards].map((card, index) => {
+                const CardInner = (
+                  <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-raised/40">
+                    {card.image ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={getAssetPath(card.image)}
+                        alt={card.title}
+                        className="aspect-[16/10] w-full object-cover transition-transform duration-300 ease-out motion-safe:group-hover:scale-[1.04]"
+                      />
+                    ) : (
+                      <div
+                        role="img"
+                        aria-label={card.title}
+                        className="flex aspect-[16/10] w-full items-center justify-center p-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.16em] text-bone/70"
+                        style={{
+                          background: `linear-gradient(135deg, ${card.accent}52, ${card.accent}14)`,
+                        }}
+                      >
+                        {card.category}
+                      </div>
+                    )}
+                    <div className="flex flex-1 flex-col p-6">
+                      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                        <h3 className="font-display text-xl font-semibold leading-snug transition-colors duration-200 group-hover:text-accent">
+                          {card.title}
+                        </h3>
+                        {card.year && (
+                          <span className="font-mono text-xs text-mist">
+                            {card.year}
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-mist">
+                        {card.category}
+                      </p>
+                      {card.description && (
+                        <p className="mt-3 text-[15px] leading-relaxed text-mist">
+                          {card.description}
+                        </p>
+                      )}
+                      {card.href && card.cta && (
+                        <span className="mt-4 inline-flex items-center gap-1.5 font-display text-sm font-semibold text-accent">
+                          {card.cta}
+                          <span
+                            aria-hidden
+                            className="transition-transform duration-200 motion-safe:group-hover:translate-x-1"
+                          >
+                            {card.internal ? "→" : "↗"}
+                          </span>
+                        </span>
+                      )}
+                    </div>
+                  </article>
+                );
+
+                const cardClass =
+                  "block w-[280px] sm:w-[320px] md:w-[360px] shrink-0 h-full rounded-2xl transition-transform duration-300 hover:-translate-y-1";
+
+                if (card.href && card.internal) {
+                  return (
+                    <Link
+                      key={`${card.title}-${index}`}
+                      href={card.href}
+                      aria-label={`${card.title} — ${card.cta}`}
+                      className={cardClass}
+                    >
+                      {CardInner}
+                    </Link>
+                  );
+                }
+                if (card.href) {
+                  return (
+                    <a
+                      key={`${card.title}-${index}`}
+                      href={card.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${card.title} — ${card.cta}`}
+                      className={cardClass}
+                    >
+                      {CardInner}
+                    </a>
+                  );
+                }
+                return (
+                  <div
+                    key={`${card.title}-${index}`}
+                    className="w-[280px] sm:w-[320px] md:w-[360px] shrink-0 h-full"
                   >
                     {CardInner}
-                  </Link>
-                </Reveal>
-              );
-            }
-            if (card.href) {
-              return (
-                <Reveal key={card.title}>
-                  <a
-                    href={card.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${card.title} — ${card.cta}`}
-                    className="block h-full rounded-2xl transition-transform duration-300 hover:-translate-y-1"
-                  >
-                    {CardInner}
-                  </a>
-                </Reveal>
-              );
-            }
-            return <Reveal key={card.title}>{CardInner}</Reveal>;
-          })}
-        </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
