@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/motion/Reveal";
+import { getAssetPath } from "@/lib/utils";
 
 const tagline =
   "My research investigates how human needs, professional practices, and social values can inform the design of responsible AI-enabled interactive systems.";
@@ -36,30 +37,16 @@ export function AboutSection() {
             </h2>
           </Reveal>
           
-          {/* Prototype Round Avatar Frame */}
+          {/* Round Avatar Photo Frame */}
           <Reveal delay={0.05}>
             <div className="relative group/avatar select-none">
-              <div className="h-28 w-28 md:h-36 md:w-36 rounded-full border border-dashed border-line bg-raised/20 flex items-center justify-center overflow-hidden transition-all duration-300 hover:border-accent/40 hover:bg-raised/40 hover:shadow-[0_8px_24px_rgba(224,118,77,0.06)]">
-                <svg
-                  className="h-11 w-11 md:h-14 md:w-14 text-mist/30 transition-colors duration-300 group-hover:text-accent/50"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                  />
-                </svg>
-              </div>
-              
-              {/* Optional tiny indicator tag */}
-              <div className="absolute top-full right-0 mt-2 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <span className="font-mono text-[9px] uppercase tracking-wider text-accent bg-ground border border-accent/20 px-2 py-0.5 rounded shadow">
-                  Avatar
-                </span>
+              <div className="h-28 w-28 md:h-36 md:w-36 rounded-full border border-line bg-raised/20 flex items-center justify-center overflow-hidden transition-all duration-300 hover:border-accent/40 hover:bg-raised/40 hover:shadow-[0_8px_24px_rgba(224,118,77,0.06)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={getAssetPath("/avatar.jpg")}
+                  alt="Xiuer Gu"
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover/avatar:scale-[1.04]"
+                />
               </div>
             </div>
           </Reveal>
