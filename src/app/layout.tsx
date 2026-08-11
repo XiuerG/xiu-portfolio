@@ -4,7 +4,6 @@ import { GeistMono } from "geist/font/mono";
 import { Poppins, Nunito_Sans } from "next/font/google";
 import { SiteNav } from "@/components/SiteNav";
 import { CatAgent } from "@/components/cat/CatAgent";
-import { CursorFollower } from "@/components/motion/CursorFollower";
 import "./globals.css";
 
 const display = Poppins({
@@ -65,7 +64,6 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <CursorFollower />
         <SiteNav />
         <main>{children}</main>
         <CatAgent />
