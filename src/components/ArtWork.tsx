@@ -96,7 +96,9 @@ export function ArtWork() {
   const scroll = (direction: "left" | "right") => {
     const el = scrollRef.current;
     if (!el) return;
-    const scrollAmount = direction === "left" ? -360 : 360;
+    const cardEl = el.firstElementChild as HTMLElement;
+    const cardWidth = cardEl ? cardEl.offsetWidth + 24 : 360; // Card width + gap
+    const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
     el.scrollBy({ left: scrollAmount, behavior: "smooth" });
   };
 
@@ -105,47 +107,24 @@ export function ArtWork() {
       id="design"
       className="scroll-mt-24 border-t border-line py-24 md:py-28"
     >
-      <div className="relative">
-        <SectionHeader
-          eyebrow="Design & Interaction"
-          title="Design & Interaction"
-          description="Interaction design and creative work — accessibility, installations, generative pieces, and experiments."
-        />
+      <SectionHeader
+        eyebrow="Design & Interaction"
+        title="Design & Interaction"
+        description="Interaction design and creative work — accessibility, installations, generative pieces, and experiments."
+      />
 
-        {/* Navigation Controls */}
-        <div className="mx-auto mt-6 flex max-w-[1200px] justify-end gap-3 px-6 md:px-10">
-          <button
-            onClick={() => scroll("left")}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-raised/40 text-bone hover:border-accent hover:text-accent transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/50"
-            aria-label="Scroll left"
-          >
-            <span className="translate-y-[-1px]">←</span>
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-raised/40 text-bone hover:border-accent hover:text-accent transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent/50"
-            aria-label="Scroll right"
-          >
-            <span className="translate-y-[-1px]">→</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="mx-auto mt-8 w-full">
+      <div className="mx-auto mt-12 w-full max-w-[1200px] px-6 md:px-10 relative group/carousel">
         <Reveal>
-          <div className="relative w-full overflow-hidden">
-            {/* Ambient gradients to fade out edges */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-ground to-transparent md:w-24" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-ground to-transparent md:w-24" />
-
+          <div className="relative">
+            {/* Carousel Container */}
             <div
               ref={scrollRef}
               onScroll={handleScroll}
-              className="scrollbar-none flex gap-6 overflow-x-auto scroll-smooth px-6 pb-6 md:px-10"
+              className="scrollbar-none flex gap-6 overflow-x-auto scroll-smooth pb-6 items-stretch"
             >
               {cards.map((card) => {
                 const CardInner = (
-                  <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-raised/40">
+                  <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-raised/40 transition-all duration-300 hover:border-accent/30 hover:shadow-[0_12px_30px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_12px_30px_rgba(224,118,77,0.06)]">
                     {card.image ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img
@@ -200,7 +179,7 @@ export function ArtWork() {
                 );
 
                 const cardClass =
-                  "block w-[280px] sm:w-[320px] md:w-[360px] shrink-0 h-full rounded-2xl transition-transform duration-300 hover:-translate-y-1";
+                  "block w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] shrink-0 h-full rounded-2xl transition-transform duration-300 hover:-translate-y-1";
 
                 if (card.href && card.internal) {
                   return (
@@ -231,19 +210,41 @@ export function ArtWork() {
                 return (
                   <div
                     key={card.title}
-                    className="w-[280px] sm:w-[320px] md:w-[360px] shrink-0 h-full"
+                    className="w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] shrink-0 h-full"
                   >
                     {CardInner}
                   </div>
                 );
               })}
             </div>
+
+            {/* Left Button */}
+            {scrollProgress > 1 && (
+              <button
+                onClick={() => scroll("left")}
+                className="absolute left-2 top-[42%] -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-line bg-raised/90 text-bone hover:border-accent hover:text-accent transition-all duration-200 cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:scale-105 active:scale-95 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
+                aria-label="Scroll left"
+              >
+                <span className="translate-y-[-1px] text-lg">←</span>
+              </button>
+            )}
+
+            {/* Right Button */}
+            {scrollProgress < 99 && (
+              <button
+                onClick={() => scroll("right")}
+                className="absolute right-2 top-[42%] -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-line bg-raised/90 text-bone hover:border-accent hover:text-accent transition-all duration-200 cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:scale-105 active:scale-95 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
+                aria-label="Scroll right"
+              >
+                <span className="translate-y-[-1px] text-lg">→</span>
+              </button>
+            )}
           </div>
         </Reveal>
       </div>
 
       {/* Progress bar */}
-      <div className="mx-auto mt-2 max-w-[1200px] px-6 md:px-10">
+      <div className="mx-auto mt-4 max-w-[1200px] px-6 md:px-10">
         <div className="h-[2px] w-full bg-line rounded-full overflow-hidden">
           <div
             className="h-full bg-accent transition-all duration-150 rounded-full"
