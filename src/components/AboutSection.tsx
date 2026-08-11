@@ -39,9 +39,9 @@ export function AboutSection() {
           {/* Prototype Round Avatar Frame */}
           <Reveal delay={0.05}>
             <div className="relative group/avatar select-none">
-              <div className="h-20 w-20 md:h-24 md:w-24 rounded-full border border-dashed border-line bg-raised/20 flex items-center justify-center overflow-hidden transition-all duration-300 hover:border-accent/40 hover:bg-raised/40 hover:shadow-[0_8px_24px_rgba(224,118,77,0.06)]">
+              <div className="h-28 w-28 md:h-36 md:w-36 rounded-full border border-dashed border-line bg-raised/20 flex items-center justify-center overflow-hidden transition-all duration-300 hover:border-accent/40 hover:bg-raised/40 hover:shadow-[0_8px_24px_rgba(224,118,77,0.06)]">
                 <svg
-                  className="h-8 w-8 md:h-10 md:w-10 text-mist/30 transition-colors duration-300 group-hover:text-accent/50"
+                  className="h-11 w-11 md:h-14 md:w-14 text-mist/30 transition-colors duration-300 group-hover:text-accent/50"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
