@@ -98,7 +98,8 @@ export function ArtWork() {
     if (!el) return;
     const cardEl = el.firstElementChild as HTMLElement;
     const cardWidth = cardEl ? cardEl.offsetWidth + 24 : 360; // Card width + gap
-    const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
+    // Scroll by exactly 3 cards
+    const scrollAmount = direction === "left" ? -(cardWidth * 3) : (cardWidth * 3);
     el.scrollBy({ left: scrollAmount, behavior: "smooth" });
   };
 
@@ -124,7 +125,7 @@ export function ArtWork() {
             >
               {cards.map((card) => {
                 const CardInner = (
-                  <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-raised/40 transition-all duration-300 hover:border-accent/30 hover:shadow-[0_12px_30px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_12px_30px_rgba(224,118,77,0.06)]">
+                  <article className="group flex h-full flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-raised/40 transition-all duration-300 hover:border-accent/30 hover:shadow-[0_12px_30px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_12px_30px_rgba(224,118,77,0.06)]">
                     {card.image ? (
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img
@@ -179,7 +180,7 @@ export function ArtWork() {
                 );
 
                 const cardClass =
-                  "block w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] shrink-0 h-full rounded-2xl transition-transform duration-300 hover:-translate-y-1";
+                  "flex flex-col flex-[0_0_100%] sm:flex-[0_0_calc((100%-1.5rem)/2)] lg:flex-[0_0_calc((100%-3rem)/3)] shrink-0 h-full rounded-2xl transition-transform duration-300 hover:-translate-y-1";
 
                 if (card.href && card.internal) {
                   return (
@@ -210,7 +211,7 @@ export function ArtWork() {
                 return (
                   <div
                     key={card.title}
-                    className="w-full sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] shrink-0 h-full"
+                    className="flex flex-col flex-[0_0_100%] sm:flex-[0_0_calc((100%-1.5rem)/2)] lg:flex-[0_0_calc((100%-3rem)/3)] shrink-0 h-full"
                   >
                     {CardInner}
                   </div>
