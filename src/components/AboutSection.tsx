@@ -29,11 +29,41 @@ export function AboutSection() {
       className="scroll-mt-24 border-t border-line px-6 py-24 md:px-10 md:py-28"
     >
       <div className="mx-auto max-w-[1200px]">
-        <Reveal>
-          <h2 className="font-display text-[clamp(30px,3.6vw,44px)] font-bold tracking-tight">
-            About
-          </h2>
-        </Reveal>
+        <div className="flex items-start justify-between">
+          <Reveal>
+            <h2 className="font-display text-[clamp(30px,3.6vw,44px)] font-bold tracking-tight">
+              About
+            </h2>
+          </Reveal>
+          
+          {/* Prototype Round Avatar Frame */}
+          <Reveal delay={0.05}>
+            <div className="relative group/avatar select-none">
+              <div className="h-20 w-20 md:h-24 md:w-24 rounded-full border border-dashed border-line bg-raised/20 flex items-center justify-center overflow-hidden transition-all duration-300 hover:border-accent/40 hover:bg-raised/40 hover:shadow-[0_8px_24px_rgba(224,118,77,0.06)]">
+                <svg
+                  className="h-8 w-8 md:h-10 md:w-10 text-mist/30 transition-colors duration-300 group-hover:text-accent/50"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                  />
+                </svg>
+              </div>
+              
+              {/* Optional tiny indicator tag */}
+              <div className="absolute top-full right-0 mt-2 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200 pointer-events-none">
+                <span className="font-mono text-[9px] uppercase tracking-wider text-accent bg-ground border border-accent/20 px-2 py-0.5 rounded shadow">
+                  Avatar
+                </span>
+              </div>
+            </div>
+          </Reveal>
+        </div>
 
         <div className="mt-12 grid gap-12 md:grid-cols-2 md:gap-16">
           {/* Left — tagline over background */}
