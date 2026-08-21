@@ -13,6 +13,7 @@ import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGroup, StaggerItem } from "@/components/motion/Stagger";
 import { InteractiveDemo } from "@/components/InteractiveDemo";
+import { WetShowcase } from "@/components/WetShowcase";
 import { getAssetPath } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -41,6 +42,9 @@ export default async function CaseStudy({
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
+  if (slug === "wet-guard") {
+    return <WetShowcase accent={project.accent} />;
+  }
 
   const next = getNextProject(slug);
 
@@ -363,13 +367,15 @@ function Block({ block, accent }: { block: CaseBlock; accent: string }) {
     case "demo":
       return <InteractiveDemo />;
 
+    case "wetDemo":
+      return <WetShowcase accent={accent} />;
+
     case "feature":
       return (
         <div className="relative left-1/2 w-[min(calc(100vw-3rem),80rem)] -translate-x-1/2 py-6">
           <div
-            className={`grid items-center gap-10 md:grid-cols-2 md:gap-14 ${
-              block.flip ? "md:[&>figure]:order-first" : ""
-            }`}
+            className={`grid items-center gap-10 md:grid-cols-2 md:gap-14 ${block.flip ? "md:[&>figure]:order-first" : ""
+              }`}
           >
             <div>
               {block.eyebrow && (
