@@ -11,96 +11,100 @@ export type CaseFigure = {
 /** One content block inside a case study section. */
 export type CaseBlock =
   | {
-      kind: "prose";
-      /** Big serif statement that opens the section (e.g. "Therapy is about people — not paperwork."). */
-      lead?: string;
-      body?: string[];
-    }
+    kind: "prose";
+    /** Big serif statement that opens the section (e.g. "Therapy is about people — not paperwork."). */
+    lead?: string;
+    body?: string[];
+  }
   | {
-      /** Accent-marked pull quote / framing question. */
-      kind: "callout";
-      text: string;
-    }
+    /** Accent-marked pull quote / framing question. */
+    kind: "callout";
+    text: string;
+  }
   | {
-      /** Grid of titled cards — design principles, barriers, interaction modes. */
-      kind: "cards";
-      items: { title: string; description: string }[];
-    }
+    /** Grid of titled cards — design principles, barriers, interaction modes. */
+    kind: "cards";
+    items: { title: string; description: string }[];
+  }
   | {
-      /** Vertical journey / workflow diagram. */
-      kind: "flow";
-      steps: string[];
-    }
+    /** Vertical journey / workflow diagram. */
+    kind: "flow";
+    steps: string[];
+  }
   | { kind: "figure"; figure: CaseFigure }
   | {
-      /** Subsection with its own heading, e.g. one redesign area. */
-      kind: "sub";
-      title: string;
-      body: string[];
-      figure?: CaseFigure;
-    }
+    /** Subsection with its own heading, e.g. one redesign area. */
+    kind: "sub";
+    title: string;
+    body: string[];
+    figure?: CaseFigure;
+  }
   | {
-      /** Plain or check-marked list. */
-      kind: "list";
-      items: string[];
-      checked?: boolean;
-    }
+    /** Plain or check-marked list. */
+    kind: "list";
+    items: string[];
+    checked?: boolean;
+  }
   | {
-      /** Column groups — used for "My Contribution" at the end. */
-      kind: "columns";
-      groups: { title: string; items: string[] }[];
-    }
+    /** Column groups — used for "My Contribution" at the end. */
+    kind: "columns";
+    groups: { title: string; items: string[] }[];
+  }
   | {
-      /** Image-led product frame: breaks out of the text column and lets the
-       *  screenshot carry the story. Step number + short title + tag chips. */
-      kind: "showcase";
-      step?: string;
-      title: string;
-      description?: string;
-      tags?: string[];
-      figure: CaseFigure;
-    }
+    /** Image-led product frame: breaks out of the text column and lets the
+     *  screenshot carry the story. Step number + short title + tag chips. */
+    kind: "showcase";
+    step?: string;
+    title: string;
+    description?: string;
+    tags?: string[];
+    figure: CaseFigure;
+  }
   | {
-      /** Interactive demo embed — renders the CoReLink scenario walkthrough
-       *  with auto-play, simulated cursor, and staged output. */
-      kind: "demo";
-    }
+    /** Interactive demo embed — renders the CoReLink scenario walkthrough
+     *  with auto-play, simulated cursor, and staged output. */
+    kind: "demo";
+  }
   | {
-      /** Web product-page feature row: a wide screenshot on one side, a short
-       *  headline + body + optional bullet points on the other. Rows alternate
-       *  sides (`flip`) down the page — a big-tech marketing-page rhythm that
-       *  reads differently from the centered `showcase` blocks. */
-      kind: "feature";
-      eyebrow?: string;
-      title: string;
-      body: string[];
-      points?: string[];
-      figure: CaseFigure;
-      flip?: boolean;
-    }
+    /** Web product-page feature row: a wide screenshot on one side, a short
+     *  headline + body + optional bullet points on the other. Rows alternate
+     *  sides (`flip`) down the page — a big-tech marketing-page rhythm that
+     *  reads differently from the centered `showcase` blocks. */
+    kind: "feature";
+    eyebrow?: string;
+    title: string;
+    body: string[];
+    points?: string[];
+    figure: CaseFigure;
+    flip?: boolean;
+  }
   | {
-      /** Small screenshot gallery — a caption plus a row of compact images.
-       *  Used to show a secondary surface (e.g. the phone app) without giving
-       *  it full-width real estate. */
-      kind: "gallery";
-      title?: string;
-      caption?: string;
-      figures: CaseFigure[];
-    }
+    /** Small screenshot gallery — a caption plus a row of compact images.
+     *  Used to show a secondary surface (e.g. the phone app) without giving
+     *  it full-width real estate. */
+    kind: "gallery";
+    title?: string;
+    caption?: string;
+    figures: CaseFigure[];
+  }
   | {
-      /** Compact research/evaluation summary — a grid of label → value(s)
-       *  entries (Research Question, Methods, My Role, Status…). Sits near
-       *  the top of a case study, before the detailed process. */
-      kind: "researchOverview";
-      entries: { label: string; value: string | string[] }[];
-    }
+    /** Compact research/evaluation summary — a grid of label → value(s)
+     *  entries (Research Question, Methods, My Role, Status…). Sits near
+     *  the top of a case study, before the detailed process. */
+    kind: "researchOverview";
+    entries: { label: string; value: string | string[] }[];
+  }
   | {
-      /** Honest scoping note at the foot of a case study — what stage the work
-       *  reached and what has not yet been evaluated. */
-      kind: "limitations";
-      title?: string;
-      body: string[];
-    };
+    /** Honest scoping note at the foot of a case study — what stage the work
+     *  reached and what has not yet been evaluated. */
+    kind: "limitations";
+    title?: string;
+    body: string[];
+  }
+  | {
+    /** WET Guard interactive dual-device showcase — renders real desktop & mobile screenshots. */
+    kind: "wetDemo";
+  };
 
 export type CaseSection = {
   id: string;
@@ -392,6 +396,24 @@ export const projects: Project[] = [
                   ],
                 },
               ],
+            },
+          ],
+        },
+        {
+          id: "interactive-prototype",
+          label: "Interactive Prototype",
+          blocks: [
+            {
+              kind: "prose",
+              lead: "One protocol, two hands",
+              body: [
+                "Written Exposure Therapy is a rigid, script-driven treatment. The hard part was never the model — it was wrapping a high-stakes therapeutic conversation in an interface a clinician trusts, a patient isn't frightened by, and a researcher can measure.",
+                "The system runs the same five-step flow across two clients. The clinician works it from a desktop console: deep session configuration, live observation of agent dialogue, a safety gate that holds the agent back on a risk signal, and multi-dimensional evaluation of the transcript. The patient meets it on a phone — a single soft onboarding card, guided turns, timed writing, and a calm restatement of the same safety status.",
+                "Neither surface is a scaled copy of the other. One token sheet drives both, but mobile is reassuring and linear where the console is dense and analytical — the same words carried with different confidence.",
+              ],
+            },
+            {
+              kind: "wetDemo",
             },
           ],
         },
