@@ -5,9 +5,6 @@
 /**
  * CV / résumé path. Resolve with getAssetPath() at the call site so the
  * GitHub Pages basePath is applied.
- *
- * TODO: Drop the real CV PDF into /public and update this path if the
- * filename differs. Until the file exists this link will 404.
  */
 export const CV_PATH = "/Xiuer-Gu-CV.pdf";
 
