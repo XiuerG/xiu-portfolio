@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -28,6 +29,35 @@ const menuLinks: MenuLink[] = [
  * mid-flight when a route change lands in the same frame.
  */
 export function SiteNav() {
+  const pathname = usePathname();
+
+  /**
+   * Same-page section links are scrolled by hand. Routing to "/#section" while
+   * already on "/" hands the scroll to the router, which lands short of the
+   * target — clicking Research put you back in About. Off the homepage the
+   * router still handles it, because the section has to be rendered first.
+   */
+  const scrollToSection = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    setOpen(false);
+    if (!href.startsWith("/#") || pathname !== "/") return;
+    const el = document.getElementById(href.slice(2));
+    if (!el) return;
+    e.preventDefault();
+    // scroll-margin-top on the section carries the sticky-bar offset, so read
+    // it rather than hard-coding a second copy of that number here.
+    const offset = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+    window.scrollTo({
+      top: el.getBoundingClientRect().top + window.scrollY - offset,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+    window.history.replaceState(null, "", href);
+  };
+
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -92,7 +122,7 @@ export function SiteNav() {
                   ) : (
                     <Link
                       href={l.href}
-                      onClick={() => setOpen(false)}
+                      onClick={(e) => scrollToSection(e, l.href)}
                       tabIndex={open ? 0 : -1}
                       className={cls}
                     >
@@ -159,7 +189,12 @@ export function SiteNav() {
                       {content}
                     </a>
                   ) : (
-                    <Link href={l.href}>{content}</Link>
+                    <Link
+                      href={l.href}
+                      onClick={(e) => scrollToSection(e, l.href)}
+                    >
+                      {content}
+                    </Link>
                   )}
                 </span>
               );

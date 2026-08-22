@@ -46,14 +46,12 @@ const EYE_COLS = new Set([3, 4, 11, 12]);
 export function PixelCat({
   state,
   size = 104,
-  isMobile = false,
   onClick,
   onHoverChange,
   buttonRef,
 }: {
   state: CatState;
   size?: number;
-  isMobile?: boolean;
   onClick: () => void;
   onHoverChange: (hovering: boolean) => void;
   buttonRef?: React.Ref<HTMLButtonElement>;
@@ -94,32 +92,39 @@ export function PixelCat({
     };
   }, [state]);
 
-  // Mobile discoverability nudge: a beat after arrival, the bubble surfaces once
-  // per session (since there's no hover), then tucks away after a while. The
-  // "seen" flag is written only after it has actually shown for its full run (or
-  // the chat is opened), so an early remount can't silently swallow it.
+  // Discoverability nudge: the bubble surfaces on its own so the cat reads as
+  // something you can talk to. It arrives a beat after the page settles, then
+  // returns every 30s, showing for 6s at a time. It stays quiet while someone
+  // is already pointing at the cat or has the chat open, and it stops for good
+  // once the chat has been opened this session — the invitation has landed.
   useEffect(() => {
-    if (!isMobile) return;
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem("catNudged")) return;
 
-    const show = setTimeout(() => setNudge(true), 1500);
-    const hide = setTimeout(() => {
-      setNudge(false);
-      sessionStorage.setItem("catNudged", "1");
-    }, 11000);
+    let hide: ReturnType<typeof setTimeout> | null = null;
+    const run = () => {
+      setNudge(true);
+      hide = setTimeout(() => setNudge(false), 6000);
+    };
+
+    const first = setTimeout(run, 1500);
+    const every = setInterval(run, 30000);
 
     return () => {
-      clearTimeout(show);
-      clearTimeout(hide);
+      clearTimeout(first);
+      clearInterval(every);
+      if (hide) clearTimeout(hide);
     };
-  }, [isMobile]);
+  }, []);
 
-  // Opening the dialog dismisses the nudge and counts as seen.
+  // Pointing at the cat, or opening the chat, retires the nudge — once someone
+  // has found it, repeating the invitation is just noise.
   useEffect(() => {
     if (state === "active" || state === "talking") {
       setNudge(false);
       if (typeof window !== "undefined") sessionStorage.setItem("catNudged", "1");
+    } else if (state === "hover") {
+      setNudge(false);
     }
   }, [state]);
 

@@ -29,7 +29,6 @@ export function CatAgent() {
         <PixelCat
           state={state}
           size={isMobile ? 76 : 104}
-          isMobile={isMobile}
           onClick={openDialog}
           onHoverChange={setHovering}
           buttonRef={catButtonRef}
