@@ -1,0 +1,526 @@
+/* ==================================================================
+   WET Guard — the "Industry" design system, scoped to the case-study
+   page. Tokens, base type, and the component classes the design doc
+   actually uses (.blueprint/.corner, .tag*, .app, .sidebar-demo),
+   lifted from the project's industry.css and its inline <style>.
+
+   Everything is nested under `.wg` so the surrounding portfolio keeps
+   its own tokens, typography, and theme switching.
+   ================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Barlow+Condensed:wght@400;600&display=swap");
+
+.wg {
+  --color-bg: #f2f2f3;
+  --color-surface: #e9e9ea;
+  --color-text: #1d1f20;
+  --color-accent: #5980a6;
+  --color-accent-2: #728fab;
+  --color-divider: color-mix(in srgb, #1d1f20 16%, transparent);
+
+  --color-neutral-100: #f5f5f8;
+  --color-neutral-200: #e7e7ea;
+  --color-neutral-300: #d4d4d7;
+  --color-neutral-400: #b7b7ba;
+  --color-neutral-500: #98989b;
+  --color-neutral-600: #7a7a7d;
+  --color-neutral-700: #5d5d60;
+  --color-neutral-800: #424244;
+  --color-neutral-900: #2b2b2d;
+
+  --color-accent-100: #eef6ff;
+  --color-accent-200: #d6ebff;
+  --color-accent-300: #b5d9fd;
+  --color-accent-400: #94bce3;
+  --color-accent-500: #749dc4;
+  --color-accent-600: #597ea3;
+  --color-accent-700: #416180;
+  --color-accent-800: #2c455d;
+  --color-accent-900: #1d2d3d;
+
+  --color-accent-2-100: #eef6ff;
+  --color-accent-2-800: #314457;
+
+  --font-heading: "Barlow Condensed", system-ui, sans-serif;
+  --font-heading-weight: 600;
+  --font-body: "Barlow", system-ui, sans-serif;
+
+  --space-1: 3.4px;
+  --space-2: 6.8px;
+  --space-3: 10.2px;
+  --space-4: 13.6px;
+  --space-6: 20.4px;
+  --space-8: 27.2px;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 7px;
+
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2b2b2d 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2b2b2d 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2b2b2d 22%, transparent);
+
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.wg *,
+.wg *::before,
+.wg *::after {
+  box-sizing: border-box;
+}
+
+.wg h1,
+.wg h2,
+.wg h3,
+.wg h4,
+.wg h5,
+.wg h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--space-2);
+}
+.wg h1 { font-size: 42px; }
+.wg h2 { font-size: 32px; }
+.wg h3 { font-size: 25px; }
+.wg h4 { font-size: 20px; }
+.wg h5 { font-size: 16px; }
+.wg h6 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+.wg p { margin: 0 0 var(--space-3); }
+.wg a { color: var(--color-accent); text-decoration: none; text-underline-offset: 3px; }
+.wg a:hover { color: var(--color-accent-700); }
+.wg img { display: block; max-width: 100%; }
+.wg figure { margin: 0; }
+.wg ::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+.wg :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.wg .text-muted { color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+
+/* — blueprint frame: a square hairline box with registration marks — */
+.wg .blueprint {
+  position: relative;
+  border: 1px solid var(--color-divider);
+  border-radius: 0;
+}
+.wg .blueprint.halftone,
+.wg .blueprint.plate,
+.wg .blueprint.duotone { overflow: visible; }
+.wg .blueprint > .corner {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+.wg .blueprint > .corner::before,
+.wg .blueprint > .corner::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.wg .blueprint > .corner::before { left: 5px; top: 0; width: 1px; height: 100%; }
+.wg .blueprint > .corner::after { top: 5px; left: 0; width: 100%; height: 1px; }
+.wg .blueprint > .corner.tl { top: -6px; left: -6px; }
+.wg .blueprint > .corner.tr { top: -6px; right: -6px; }
+.wg .blueprint > .corner.bl { bottom: -6px; left: -6px; }
+.wg .blueprint > .corner.br { bottom: -6px; right: -6px; }
+
+/* — tags — */
+.wg .tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 3px 10px;
+  border-radius: 0;
+}
+.wg .tag-accent { background: var(--color-accent-100); color: var(--color-accent-800); }
+.wg .tag-accent-2 { background: var(--color-accent-2-100); color: var(--color-accent-2-800); }
+.wg .tag-neutral { background: var(--color-neutral-100); color: var(--color-neutral-800); }
+.wg .tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent); }
+
+.wg .elev-sm { box-shadow: var(--shadow-sm); }
+.wg .elev-md { box-shadow: var(--shadow-md); }
+.wg .elev-lg { box-shadow: var(--shadow-lg); }
+
+/* — the recreated product UI runs on its own system font stack — */
+.wg .app {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* — hover-expand console rail — */
+.wg .sidebar-demo { width: 60px; transition: width 0.3s ease; }
+.wg .sidebar-demo:hover { width: 190px; }
+.wg .sidebar-demo .lbl {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+.wg .sidebar-demo:hover .lbl { opacity: 1; max-width: 150px; }
+
+/* — scroll reveal — */
+.wg [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.wg [data-reveal].in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wg [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+
+@keyframes wg-tdot {
+  0%, 100% { transform: translateY(0); opacity: 0.35; }
+  50% { transform: translateY(-3px); opacity: 1; }
+}
+@keyframes wg-floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes wg-gridpan {
+  from { background-position: 0 0; }
+  to { background-position: 44px 44px; }
+}
+
+/* ==================================================================
+   Responsive layer.
+
+   The design document is a fixed desktop composition — multi-column
+   grids, a 1000px laptop, a 320px phone. It renders exactly as drawn
+   at >=1024px. Below that the outer wrapper's overflow-x:hidden would
+   simply clip it, so these rules stack the columns and let the device
+   mockups scale. Desktop rendering is untouched.
+   ================================================================== */
+@media (max-width: 1023px) {
+  .wg [style*="grid-template-columns"],
+  .wg [style*="gridTemplateColumns"] {
+    grid-template-columns: 1fr !important;
+  }
+  .wg nav[style*="sticky"] {
+    gap: 16px !important;
+    padding: 12px 20px !important;
+    overflow-x: auto;
+  }
+  .wg section,
+  .wg header {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+  /* The recreated product UI is a picture of a desktop app and cannot
+     reflow; let it pan inside its frame instead of being clipped. */
+  .wg .app {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .wg nav[style*="sticky"] a {
+    font-size: 12px !important;
+  }
+  /* the phone mockup is a fixed 320px plate */
+  .wg .blueprint[style*="320px"] {
+    width: 100% !important;
+    max-width: 320px;
+    margin-inline: auto;
+  }
+  .wg .sidebar-demo { width: 52px; }
+}
+
+/* ==================================================================
+   Moments 02 and 03 share the session-summary frame height (04 is the
+   tallest and is left untouched), so the three console shots read as
+   one set rather than three different sizes. The content grid takes
+   the slack so the inner cards fill the frame instead of leaving a gap.
+   ================================================================== */
+.wg .app.wg-frame {
+  min-height: 741px;
+  display: flex;
+  flex-direction: column;
+}
+.wg .app.wg-frame .wg-frame-body {
+  flex: 1;
+}
+
+@media (max-width: 1023px) {
+  .wg .app.wg-frame {
+    min-height: 0;
+    display: block;
+  }
+}
+
+/* ==================================================================
+   Dark mode.
+
+   The site toggles `data-theme` on <html> (and drops the `light`
+   class). `.wg` previously pinned the Industry light palette, so the
+   page stayed cream whichever theme was active. Only the tokens are
+   re-pointed here — the product UI inside `.app` deliberately keeps
+   its own light chrome, the way a device screenshot would.
+   ================================================================== */
+html[data-theme="dark"] .wg,
+html:not(.light):not([data-theme="light"]) .wg {
+  --color-bg: #141416;
+  --color-surface: #1c1d20;
+  --color-text: #ececee;
+  --color-accent: #8fb4d8;
+  --color-accent-2: #9db6cf;
+  --color-divider: color-mix(in srgb, #ececee 20%, transparent);
+
+  --color-accent-100: #223243;
+  --color-accent-700: #b6d2ee;
+  --color-accent-800: #cfe2f4;
+  --color-accent-300: #7f9fbf;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 3px 10px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+/* ==================================================================
+   Frames.
+
+   The design document marked every box with blueprint registration
+   crosses. They read as drafting marks rather than as part of this
+   portfolio, so the marks are retired and the boxes pick up the
+   site's own card idiom: soft radius, hairline edge, a low accent
+   wash rising from the bottom, and a bright gradient base line.
+   ================================================================== */
+.wg .blueprint {
+  border-radius: 14px;
+}
+.wg .blueprint > .corner {
+  display: none;
+}
+
+.wg .blueprint.wg-card {
+  position: relative;
+  overflow: hidden;
+  background-image: radial-gradient(
+    85% 70% at 50% 118%,
+    color-mix(in srgb, var(--color-accent) 22%, transparent),
+    transparent 72%
+  );
+}
+.wg .blueprint.wg-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+}
+
+/* ── the writing caret ────────────────────────────────────────────── */
+.wg .wg-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.16em;
+  background: #1a56db;
+  animation: wg-caret-blink 1.1s steps(1, end) infinite;
+}
+@keyframes wg-caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wg .wg-caret { animation: none; }
+}
+
+/* ==================================================================
+   Product-UI palette.
+
+   The recreated application chrome used to be hard-coded light hex.
+   Those values are now role variables so the mockups follow the site
+   theme along with the page around them. Device bezels stay dark in
+   both themes — physical hardware does not invert.
+   ================================================================== */
+.wg {
+  --ui-bg: #f3f4f8;
+  --ui-surface: #ffffff;
+  --ui-subtle: #f9fafb;
+  --ui-line: #e5e7eb;
+  --ui-line-2: #d5dbe4;
+  --ui-hairline: rgba(0, 0, 0, 0.04);
+
+  --ui-text: #0f172a;
+  --ui-text-2: #33363d;
+  --ui-muted: #64748b;
+  --ui-faint: #9ca3af;
+
+  --ui-accent: #1a56db;
+  --ui-accent-soft: #dbeafe;
+  --ui-accent-ink: #3b5aa6;
+  --ui-on-accent: #ffffff;
+
+  --ui-ok: #16a34a;
+  --ui-ok-soft: #ecfdf5;
+  --ui-warn: #b45309;
+  --ui-warn-soft: #fff7ed;
+}
+
+html[data-theme="dark"] .wg,
+html:not(.light):not([data-theme="light"]) .wg {
+  --ui-bg: #131417;
+  --ui-surface: #1c1d21;
+  --ui-subtle: #232429;
+  --ui-line: #2e3036;
+  --ui-line-2: #3b3e45;
+  --ui-hairline: rgba(255, 255, 255, 0.06);
+
+  --ui-text: #edeef0;
+  --ui-text-2: #d3d5da;
+  --ui-muted: #a4a7ae;
+  --ui-faint: #82858d;
+
+  --ui-accent: #5b93f2;
+  --ui-accent-soft: #1b2942;
+  --ui-accent-ink: #a6c4f5;
+  --ui-on-accent: #ffffff;
+
+  --ui-ok: #3ecf8e;
+  --ui-ok-soft: #14301f;
+  --ui-warn: #e0a35c;
+  --ui-warn-soft: #2c2116;
+}
+
+/* the writing caret rides the product accent */
+.wg .wg-caret {
+  background: var(--ui-accent);
+}
+
+/* ==================================================================
+   Contrast + elevation pass (WCAG 2.2 AA).
+
+   Two problems this fixes:
+   1. The product mockup sat at almost the same value as the page
+      ground in dark mode, so the two merged. The mockup is now an
+      elevated surface: page < app ground < card, a clear three-step
+      ramp, the way a screen sits on a page.
+   2. Muted/faint label colours were below 4.5:1 in both themes.
+      Every text role below is measured against the surface it
+      actually sits on.
+   ================================================================== */
+.wg {
+  /* page accent darkened so 11px uppercase eyebrows clear 4.5:1 */
+  --color-accent: #45657f;
+  --color-accent-700: #34506a;
+
+  --ui-muted: #566072;
+  --ui-faint: #6b7280;
+}
+
+html[data-theme="dark"] .wg,
+html:not(.light):not([data-theme="light"]) .wg {
+  --color-bg: #0f1013;
+  --color-surface: #171920;
+  --color-text: #f0f1f3;
+  --color-divider: color-mix(in srgb, #f0f1f3 24%, transparent);
+  --color-accent: #9cc2ea;
+  --color-accent-700: #bcd8f4;
+  --color-accent-300: #86aacf;
+
+  /* the mockup is lifted off the page rather than blended into it */
+  --ui-bg: #1d2026;
+  --ui-surface: #272a31;
+  --ui-subtle: #30343c;
+  --ui-line: #3c414b;
+  --ui-line-2: #4b515c;
+  --ui-hairline: rgba(255, 255, 255, 0.08);
+
+  --ui-text: #f4f5f7;
+  --ui-text-2: #e2e4e9;
+  --ui-muted: #bcc1cb;
+  --ui-faint: #a3a9b4;
+
+  --ui-accent: #8ab4f8;
+  --ui-accent-soft: #24344d;
+  --ui-accent-ink: #c3d9fb;
+  --ui-on-accent: #0b1220;
+
+  --ui-ok: #5ddba4;
+  --ui-ok-soft: #16352a;
+  --ui-warn: #f0b978;
+  --ui-warn-soft: #33261a;
+}
+
+/* the mockup reads as a screen on the page, not a hole in it */
+html[data-theme="dark"] .wg .blueprint,
+html:not(.light):not([data-theme="light"]) .wg .blueprint {
+  border-color: color-mix(in srgb, #f0f1f3 16%, transparent);
+}
+
+/* light-mode roles that measured just under 4.5:1 on their own surface */
+.wg {
+  --ui-faint: #616a78;
+  --ui-ok: #0f7a38;
+}
+
+/* The closing band paints deep navy in both themes, so the type on it is
+   light in both — it must not follow --color-bg, which inverts. */
+.wg {
+  --color-on-deep: #f2f2f3;
+}
+
+/* ==================================================================
+   Legibility pass.
+
+   Barlow 400 at 11–12px was too light to read comfortably, and the
+   chips were the worst of it. Body weight moves to 500, the base size
+   up a step, and the tags become properly sized labels.
+   ================================================================== */
+.wg {
+  font-size: 16px;
+  font-weight: 500;
+}
+.wg p {
+  font-weight: 500;
+}
+.wg .tag {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 12px;
+  letter-spacing: 0.01em;
+}
+
+/* `overflow: hidden` zeroes a flex item's automatic minimum size, so these
+   cards could be squeezed below their own content and clip the rail. */
+.wg .blueprint.wg-card {
+  min-height: fit-content;
+}
+
+/* chart bars carry data, so they need 3:1 against the card they sit on */
+.wg {
+  --ui-chart: #6e8db8;
+}
+html[data-theme="dark"] .wg,
+html:not(.light):not([data-theme="light"]) .wg {
+  --ui-chart: #6b80a0;
+}
+
+/* The device screens carry a fixed height so the frame reads as a real phone.
+   Below the desktop breakpoint the frame narrows, which reflows the content
+   taller — release the height there so nothing is cut off. */
+@media (max-width: 1023px) {
+  .wg .app.wg-phone {
+    height: auto !important;
+  }
+}
+
+/* A `1fr` track has an automatic minimum of `auto`, so a grid item holding a
+   wide device mockup grows the track past the viewport instead of letting the
+   mockup pan inside its own frame. Allow items to shrink once stacked. */
+@media (max-width: 1023px) {
+  .wg [style*="grid-template-columns"] > * {
+    min-width: 0;
+  }
+}

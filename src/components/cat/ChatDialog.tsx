@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useDragControls, useReducedMotion } from "motion/react";
-import { greeting, suggestedPrompts, tone } from "@/lib/profile";
+import { greeting, promptBatches, tone } from "@/lib/profile";
 import { answerFromKnowledge } from "@/lib/answer";
 import { PreviewCard } from "./PreviewCard";
 
@@ -36,6 +36,8 @@ export function ChatDialog({
     { role: "assistant", content: greeting, cards: [] },
   ]);
   const [input, setInput] = useState("");
+  // Which batch of suggested chips is on screen; "More questions" steps through.
+  const [batch, setBatch] = useState(0);
   const [busy, setBusy] = useState(false);
   const [errored, setErrored] = useState(false);
 
@@ -49,6 +51,7 @@ export function ChatDialog({
   useEffect(() => {
     onBusyChange(busy);
   }, [busy, onBusyChange]);
+
 
   // Focus the input on open.
   useEffect(() => {
@@ -253,28 +256,33 @@ export function ChatDialog({
         )}
       </div>
 
-      {/* Empty-state chips (§7.3) — single horizontal scrolling row on desktop,
-          stacked top-to-bottom on mobile. */}
+      {/* Empty-state chips (§7.3) — four at a time, wrapped so every one is a
+          click away; "More questions" cycles through the rest. Nothing here
+          depends on a horizontal scroll, which a mouse can't drive. */}
       {onlyGreeting && !busy && (
-        <div
-          className={
-            isMobile
-              ? "flex flex-col gap-2 px-4 pb-3"
-              : "flex gap-2 overflow-x-auto px-4 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          }
-        >
-          {suggestedPrompts.map((p) => (
+        <div className="px-4 pb-3">
+          <div className={isMobile ? "flex flex-col gap-2" : "flex flex-wrap gap-2"}>
+            {promptBatches[batch].map((p) => (
+              <button
+                key={p}
+                onClick={() => send(p)}
+                className={
+                  "rounded-full border border-line px-3 py-1.5 text-left text-sm text-mist transition-colors hover:border-accent hover:text-bone" +
+                  (isMobile ? " w-full" : "")
+                }
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+          {promptBatches.length > 1 && (
             <button
-              key={p}
-              onClick={() => send(p)}
-              className={
-                "rounded-full border border-line px-3 py-1.5 text-left text-sm text-mist transition-colors hover:border-accent hover:text-bone" +
-                (isMobile ? " w-full" : " shrink-0 whitespace-nowrap")
-              }
+              onClick={() => setBatch((b) => (b + 1) % promptBatches.length)}
+              className="mt-2.5 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-mist transition-colors hover:text-accent"
             >
-              {p}
+              More questions ↻
             </button>
-          ))}
+          )}
         </div>
       )}
 

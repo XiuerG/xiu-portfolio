@@ -34,7 +34,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${GeistMono.variable} ${display.variable} ${body.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${display.variable} ${body.variable} light`}
+      data-theme="light"
       suppressHydrationWarning
     >
       <head>
@@ -42,18 +43,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
+                // Light is the default. Only a visitor's own saved choice
+                // switches to dark — OS preference does not.
                 try {
-                  var saved = localStorage.getItem('theme');
-                  var theme = 'dark';
-                  if (saved) {
-                    theme = saved;
-                  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-                    theme = 'light';
-                  }
-                  if (theme === 'light') {
-                    document.documentElement.classList.add('light');
-                    document.documentElement.setAttribute('data-theme', 'light');
-                  } else {
+                  if (localStorage.getItem('theme') === 'dark') {
                     document.documentElement.classList.remove('light');
                     document.documentElement.setAttribute('data-theme', 'dark');
                   }

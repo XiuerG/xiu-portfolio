@@ -46,6 +46,8 @@ export function StaggerItem({
 }) {
   const reduce = useReducedMotion();
 
+  if (reduce) return <div className={className}>{children}</div>;
+
   const item: Variants = {
     hidden: { opacity: 0, y: reduce ? 0 : y },
     show: {

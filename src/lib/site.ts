@@ -15,10 +15,9 @@ export const EMAIL = "gxe.melody@gmail.com";
 
 /**
  * External profiles shown in the contact section.
- * TODO: confirm the LinkedIn/GitHub URLs point at the right profiles.
+ * TODO: confirm the LinkedIn URL points at the right profile.
  */
 export const SOCIAL_LINKS: { label: string; href: string }[] = [
   { label: "Email", href: `mailto:${EMAIL}` },
-  { label: "GitHub", href: "https://github.com/XiuerG" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/xiuer-gu" },
 ];

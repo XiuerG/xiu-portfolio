@@ -5,8 +5,9 @@ import type { ReactNode } from "react";
 
 /**
  * Reveals its children with a fade + rise when scrolled into view.
- * Honors prefers-reduced-motion: motion users see the rise, others get a
- * plain fade with no transform.
+ * Honors prefers-reduced-motion by skipping the reveal entirely: the content
+ * renders visible from the start rather than fading in, so nothing depends on
+ * an animation running to become readable.
  */
 export function Reveal({
   children,
@@ -20,6 +21,8 @@ export function Reveal({
   y?: number;
 }) {
   const reduce = useReducedMotion();
+
+  if (reduce) return <div className={className}>{children}</div>;
 
   const variants: Variants = {
     hidden: { opacity: 0, y: reduce ? 0 : y },

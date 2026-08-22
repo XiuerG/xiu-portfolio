@@ -9,38 +9,28 @@ export type ArtWork = {
   image?: string;
   /** Optional external link (live piece, video, write-up). */
   href?: string;
+  /** Looping demo clip, shown in place of the still cover. */
+  video?: string;
+  /** Poster frame for the clip — also what shows under reduced-motion. */
+  poster?: string;
+  /** Opens the section, ahead of the case-study card. */
+  lead?: boolean;
 };
 
 /**
- * Art & Interaction — creative and interaction work outside the three main
- * research projects. Placeholder entries for now; drop images in /public and
- * fill in real titles / descriptions / links.
- *
- * TODO: replace these placeholders with real pieces (set `image`, `href`).
+ * Art & Interaction — creative and interaction work outside the main research
+ * projects. Drop images in /public and add entries here.
  */
 export const artworks: ArtWork[] = [
   {
-    title: "Untitled Interactive Installation",
-    category: "Interactive Installation · TouchDesigner",
-    year: "2024",
-    description: "Placeholder — add a real piece, image, and link.",
-  },
-  {
-    title: "Generative Visual Study",
-    category: "Generative Art",
-    year: "2023",
-    description: "Placeholder — add a real piece, image, and link.",
-  },
-  {
-    title: "Interaction Experiment",
-    category: "Interaction Design · Web",
-    year: "2023",
-    description: "Placeholder — add a real piece, image, and link.",
-  },
-  {
-    title: "Sensor-Based Prototype",
-    category: "Physical Computing",
-    year: "2023",
-    description: "Placeholder — add a real piece, image, and link.",
+    title: "An Atlas of Crossings",
+    category: "Interactive Narrative · Web",
+    year: "2026",
+    description:
+      "Four interactive storybooks on memory, return, and home across the Asian diaspora. Each spread turns a feeling into something the reader operates.",
+    href: "/work/atlas-of-crossings",
+    video: "/design/atlas-of-crossings.mp4",
+    poster: "/design/atlas-of-crossings.webp",
+    lead: true,
   },
 ];

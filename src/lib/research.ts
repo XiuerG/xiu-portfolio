@@ -6,6 +6,8 @@ export type ResearchCard = {
   kind: "Project" | "Publication";
   title: string;
   year: string;
+  /** Composed eyebrow, e.g. "Project · 2026" or "Publication · JSSWR · 2026". */
+  meta: string;
   /** Secondary line: project description, or "authors · venue" for a paper. */
   line: string;
   /** Small footnote (e.g. equal-contribution marker). */
@@ -18,6 +20,10 @@ export type ResearchCard = {
   cta: string;
   /** Cover image (projects) — publications fall back to a color block. */
   cover?: { src?: string; alt: string };
+  /** Research theme this card is grouped under. */
+  category?: string;
+  /** Venue label for the colour-block fallback (publications without a cover). */
+  venue?: string;
 };
 
 export type ResearchGroup = {
@@ -29,13 +35,13 @@ export type ResearchGroup = {
 /** Research-type order + accent per type (drives grouping and color covers). */
 const CATEGORY_ORDER: { name: string; accent: string }[] = [
   { name: "Digital Health", accent: "#84b59f" },
-  { name: "Machine Learning & AI Research", accent: "#c08457" },
 ];
 
 const projectCards: ResearchCard[] = projects.map((p) => ({
   kind: "Project",
   title: p.title,
   year: p.year,
+  meta: `Project · ${p.year}`,
   line: p.cardDescription ?? p.summary,
   role: p.cardRole ?? p.role,
   tags: (p.cardTags ?? p.tags ?? []).slice(0, 3),
@@ -43,29 +49,26 @@ const projectCards: ResearchCard[] = projects.map((p) => ({
   external: false,
   cta: "View Case Study",
   cover: p.cover,
+  category: p.category,
 }));
 
 const publicationCards: ResearchCard[] = publications.map((pub) => ({
   kind: "Publication",
-  title: pub.title,
+  title: pub.cardTitle ?? pub.title,
   year: pub.year,
-  line: `${pub.authors} · ${pub.venue}`,
-  note: pub.note,
+  meta: ["Publication", pub.cardVenue, pub.year].filter(Boolean).join(" · "),
+  line: pub.cardDescription ?? `${pub.authors} · ${pub.venue}`,
+  role: pub.cardRole,
+  note: pub.cardRole ? undefined : pub.note,
   tags: pub.tags.slice(0, 3),
-  href: pub.href,
-  external: true,
+  href: pub.page ?? pub.href,
+  external: !pub.page,
   cta: pub.cta,
-  // No image — the card renders an accent color block instead.
-  cover: undefined,
+  // Publications without a cover fall back to an accent colour block.
+  cover: pub.cover,
+  category: pub.category,
+  venue: pub.venue,
 }));
-
-/** Look up an item's theme from its source record. */
-function categoryOf(card: ResearchCard): string | undefined {
-  if (card.kind === "Project") {
-    return projects.find((p) => p.title === card.title)?.category;
-  }
-  return publications.find((p) => p.title === card.title)?.category;
-}
 
 const allCards = [...projectCards, ...publicationCards];
 
@@ -74,6 +77,6 @@ export const researchGroups: ResearchGroup[] = CATEGORY_ORDER.map(
   ({ name, accent }) => ({
     category: name,
     accent,
-    cards: allCards.filter((c) => categoryOf(c) === name),
+    cards: allCards.filter((c) => c.category === name),
   }),
 ).filter((g) => g.cards.length > 0);

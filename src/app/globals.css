@@ -19,7 +19,14 @@
   --color-ink: #111111; /* dark surface (demo section) */
   --color-cream: #f7f7f7; /* on-dark text */
 
-  --grid-color: rgba(255, 255, 255, 0.035);
+  /* Research-highlight green. One hex cannot serve both themes: the mid-green
+     that reads on cream drops to ~3.7:1 on near-black, so each theme gets the
+     lightness it needs. Dark: 9.1:1 on --color-ground. */
+  --color-study: #6fbf9b;
+
+  /* Paper grain — alpha comes from the noise, colour from the theme. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain-strength: 0.055;
 }
 
 .light, [data-theme="light"] {
@@ -34,7 +41,11 @@
   --color-ink: #faf9f6;
   --color-cream: #141412;
 
-  --grid-color: rgba(0, 0, 0, 0.035);
+  /* Light: 5.5:1 on --color-ground. */
+  --color-study: #35705a;
+
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain-strength: 0.05;
 }
 
 @theme {
@@ -71,19 +82,26 @@ html {
 
 body {
   background-color: var(--color-ground);
-  /* Faint blueprint grid over the background. */
-  background-image: linear-gradient(
-      to right,
-      var(--grid-color) 1px,
-      transparent 1px
-    ),
-    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-  background-size: 44px 44px;
   color: var(--color-bone);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+/* Paper grain. A single repeating tile of SVG fractal noise, fixed to the
+   viewport so it reads as the texture of the page rather than something that
+   scrolls past. z-index: -1 keeps it behind all content; body creates no
+   stacking context, so the layer lands between the ground and the page. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--grain);
+  background-size: 220px 220px;
+  opacity: var(--grain-strength);
 }
 
 /* Smooth color transitions for theme switching */

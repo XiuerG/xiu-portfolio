@@ -34,7 +34,12 @@ function tokenize(text: string): string[] {
     .filter((t) => t.length > 1 && !STOPWORDS.has(t));
 }
 
-function scoreStance(tokens: string[], stance: Stance): number {
+function scoreStance(tokens: string[], stance: Stance, question: string): number {
+  // An exact phrase wins outright — that is how a suggested chip always lands
+  // on the stance written for it, even when its words overlap another one.
+  const q = question.toLowerCase();
+  if (stance.phrases?.some((phrase) => q.includes(phrase))) return 100;
+
   const tagSet = new Set(stance.tags.map((t) => t.toLowerCase()));
   const contentTokens = new Set(tokenize(stance.content));
   let score = 0;
@@ -106,7 +111,7 @@ export function answerFromKnowledge(question: string): Answer {
   let bestStance: Stance | null = null;
   let bestScore = 0;
   for (const s of stances) {
-    const sc = scoreStance(tokens, s);
+    const sc = scoreStance(tokens, s, q);
     if (sc > bestScore) {
       bestScore = sc;
       bestStance = s;

@@ -36,7 +36,7 @@ export function ResearchCard({
             }}
           >
             <span className="font-display text-lg font-semibold leading-snug text-bone/80">
-              {card.kind === "Publication" ? card.line.split(" · ").pop() : card.title}
+              {card.kind === "Publication" ? (card.venue ?? card.title) : card.title}
             </span>
           </div>
         )}
@@ -44,20 +44,16 @@ export function ResearchCard({
 
       {/* Meta */}
       <p className="mt-6 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-mist">
-        {card.kind} · {card.year}
+        {card.meta}
       </p>
 
-      <h4 className="mt-2.5 font-display text-[clamp(20px,2.2vw,27px)] font-bold leading-[1.14] tracking-[-0.01em] transition-colors duration-200 group-hover:text-accent">
+      <h4 className="mt-2.5 min-h-[2.28em] font-display text-[clamp(20px,2.2vw,27px)] font-bold leading-[1.14] tracking-[-0.01em] transition-colors duration-200 group-hover:text-accent">
         {card.title}
       </h4>
 
-      <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-mist">
+      <p className="mt-3 min-h-[4.875em] max-w-[48ch] text-[15px] leading-relaxed text-mist">
         {card.line}
       </p>
-      {card.note && (
-        <p className="mt-1 font-mono text-xs text-mist">{card.note}</p>
-      )}
-
       {card.tags.length > 0 && (
         <ul className="mt-5 flex flex-wrap gap-2">
           {card.tags.map((tag) => (
@@ -71,29 +67,31 @@ export function ResearchCard({
         </ul>
       )}
 
-      {card.role && (
-        <p className="mt-5 flex items-center gap-2 text-[13px] leading-relaxed text-bone/70">
-          <span
-            className="h-1 w-1 shrink-0 rounded-full bg-accent"
-            aria-hidden
-          />
-          {card.role}
-        </p>
-      )}
+      <span className="mt-auto block">
+        {(card.role || card.note) && (
+          <span className="mt-5 flex items-center gap-2 text-[13px] leading-relaxed text-bone/70">
+            <span
+              className="h-1 w-1 shrink-0 rounded-full bg-accent"
+              aria-hidden
+            />
+            {card.role ?? card.note}
+          </span>
+        )}
 
-      <span className="mt-5 inline-flex items-center gap-1.5 font-display text-sm font-semibold text-accent">
-        {card.cta}
-        <span
-          aria-hidden
-          className="transition-transform duration-200 motion-safe:group-hover:translate-x-1"
-        >
-          {card.external ? "↗" : "→"}
+        <span className="mt-5 inline-flex items-center gap-1.5 font-display text-sm font-semibold text-accent">
+          {card.cta}
+          <span
+            aria-hidden
+            className="transition-transform duration-200 motion-safe:group-hover:translate-x-1"
+          >
+            {card.external ? "↗" : "→"}
+          </span>
         </span>
       </span>
     </>
   );
 
-  const className = "group block rounded-2xl";
+  const className = "group flex h-full flex-col rounded-2xl";
 
   return card.external ? (
     <a

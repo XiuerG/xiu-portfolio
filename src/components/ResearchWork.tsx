@@ -18,7 +18,6 @@ export function ResearchWork() {
       <SectionHeader
         eyebrow="Research Work"
         title="Research Work"
-        description="Projects and publications grouped by area — digital health and machine-learning research."
       />
 
       <div className="mx-auto mt-14 max-w-[1200px] px-6 md:px-10">
@@ -44,7 +43,7 @@ export function ResearchWork() {
 
             <div className="mt-8 grid gap-x-6 gap-y-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:gap-x-8">
               {group.cards.map((card, i) => (
-                <Reveal key={card.title} delay={(i % 3) * 0.06}>
+                <Reveal key={card.title} className="h-full" delay={(i % 3) * 0.06}>
                   <ResearchCard card={card} accent={group.accent} />
                 </Reveal>
               ))}

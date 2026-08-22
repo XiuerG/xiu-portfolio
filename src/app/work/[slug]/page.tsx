@@ -14,6 +14,12 @@ import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGroup, StaggerItem } from "@/components/motion/Stagger";
 import { InteractiveDemo } from "@/components/InteractiveDemo";
 import { WetShowcase } from "@/components/WetShowcase";
+import { VideoEmbed } from "@/components/VideoEmbed";
+import {
+  ArchIntro,
+  ArchFlow,
+  ArchCards,
+} from "@/components/ArchitectureSection";
 import { getAssetPath } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -43,7 +49,7 @@ export default async function CaseStudy({
   const project = getProject(slug);
   if (!project) notFound();
   if (slug === "wet-guard") {
-    return <WetShowcase accent={project.accent} />;
+    return <WetShowcase />;
   }
 
   const next = getNextProject(slug);
@@ -87,11 +93,11 @@ export default async function CaseStudy({
             )}
           </Reveal>
 
-          {/* Key facts (rich case studies only) */}
-          {project.caseStudy && (
+          {/* Key facts — omitted when a Research Overview block carries them. */}
+          {project.caseStudy?.meta?.length ? (
             <Reveal delay={0.15}>
               <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-line pt-8 md:grid-cols-3">
-                {project.caseStudy.meta.map((m) => (
+                {project.caseStudy.meta!.map((m) => (
                   <div key={m.label}>
                     <dt className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-mist">
                       {m.label}
@@ -100,6 +106,26 @@ export default async function CaseStudy({
                   </div>
                 ))}
               </dl>
+            </Reveal>
+          ) : null}
+
+          {project.caseStudy?.liveLink && (
+            <Reveal delay={0.2}>
+              <a
+                href={project.caseStudy.liveLink.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group mt-10 inline-flex items-center gap-2 rounded-full px-7 py-3 font-display text-sm font-semibold text-ground transition-transform duration-300 hover:scale-[1.04]"
+                style={{ backgroundColor: project.accent }}
+              >
+                {project.caseStudy.liveLink.label}
+                <span
+                  aria-hidden
+                  className="transition-transform duration-200 motion-safe:group-hover:translate-x-0.5"
+                >
+                  ↗
+                </span>
+              </a>
             </Reveal>
           )}
         </div>
@@ -176,9 +202,20 @@ function RichBody({ project }: { project: Project }) {
           className="border-t border-line py-16 first:border-t-0 first:pt-0"
         >
           <Reveal>
-            <h2 className="mb-10 text-center font-mono text-xs uppercase tracking-[0.24em] text-mist">
-              {section.label}
-            </h2>
+            {section.heading ? (
+              <div className="mb-10 text-center">
+                <p className="font-mono text-xs uppercase tracking-[0.24em] text-mist">
+                  {section.label}
+                </p>
+                <h2 className="mt-5 font-display text-3xl font-bold leading-tight tracking-[-0.01em] md:text-4xl">
+                  {section.heading}
+                </h2>
+              </div>
+            ) : (
+              <h2 className="mb-10 text-center font-mono text-xs uppercase tracking-[0.24em] text-mist">
+                {section.label}
+              </h2>
+            )}
           </Reveal>
           <div className="space-y-10">
             {section.blocks.map((block, i) => (
@@ -221,6 +258,11 @@ function Block({ block, accent }: { block: CaseBlock; accent: string }) {
           className="border-l-2 py-1 pl-6"
           style={{ borderColor: accent }}
         >
+          {block.label && (
+            <p className="mb-3 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-mist">
+              {block.label}
+            </p>
+          )}
           <p className="font-display text-xl font-semibold leading-snug md:text-2xl">
             {block.text}
           </p>
@@ -281,6 +323,173 @@ function Block({ block, accent }: { block: CaseBlock; accent: string }) {
 
     case "figure":
       return <Figure figure={block.figure} accent={accent} />;
+
+    case "methods":
+      return (
+        <ul className="border-t border-line">
+          {block.items.map((m) => (
+            <li
+              key={m.name}
+              className="grid gap-x-8 gap-y-2 border-b border-line py-6 md:grid-cols-[10rem_1fr]"
+            >
+              <p className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-mist">
+                {m.kind}
+              </p>
+              <div>
+                <h3 className="font-display text-base font-semibold leading-snug">
+                  {m.name}
+                </h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-mist">
+                  {m.body}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      );
+
+    case "findings":
+      return (
+        <ol className="space-y-0">
+          {block.items.map((f, i) => (
+            <li
+              key={f.title}
+              className="border-t border-line py-8 first:border-t-0 first:pt-0"
+            >
+              <div className="flex items-start gap-4">
+                <span
+                  className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border font-mono text-[0.65rem] tabular-nums"
+                  style={{ borderColor: accent, color: accent }}
+                  aria-hidden
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-mist">
+                    Issue {String(i + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mt-2 font-display text-lg font-semibold leading-snug md:text-xl">
+                    {f.title}
+                  </h3>
+                  <p className="mt-3 leading-relaxed text-bone/90">
+                    {f.observation}
+                  </p>
+                  <p
+                    className="mt-4 border-l pl-4 text-sm leading-relaxed text-mist"
+                    style={{ borderColor: `${accent}66` }}
+                  >
+                    {f.context}
+                  </p>
+                  {f.figure && (
+                    <div className="mt-6">
+                      <Figure figure={f.figure} accent={accent} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      );
+
+    case "responses":
+      return (
+        <div className="space-y-12">
+          {block.items.map((r, i) => {
+            const hasCrops = Boolean(r.before?.src || r.after?.src);
+            return (
+              <div
+                key={i}
+                className="border-t border-line pt-8 first:border-t-0 first:pt-0"
+              >
+                <div className="grid gap-6 md:grid-cols-[1fr_auto_1fr] md:items-start md:gap-5">
+                  <div>
+                    <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-mist">
+                      Audit finding
+                    </p>
+                    <p className="mt-3 leading-relaxed text-bone/90">
+                      {r.finding}
+                    </p>
+                  </div>
+                  <span
+                    className="hidden select-none pt-7 font-display text-xl md:block"
+                    style={{ color: accent }}
+                    aria-hidden
+                  >
+                    →
+                  </span>
+                  <div>
+                    <p
+                      className="font-mono text-[0.6rem] uppercase tracking-[0.2em]"
+                      style={{ color: accent }}
+                    >
+                      Design response
+                    </p>
+                    <p className="mt-3 leading-relaxed text-bone/90">
+                      {r.response}
+                    </p>
+                  </div>
+                </div>
+
+                {hasCrops && (
+                  <div className="mt-6 grid gap-5 md:grid-cols-2">
+                    {r.before && <Figure figure={r.before} accent={accent} />}
+                    {r.after && <Figure figure={r.after} accent={accent} />}
+                  </div>
+                )}
+
+                {r.rationale && (
+                  <p className="mt-5 text-sm leading-relaxed text-mist">
+                    {r.rationale}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      );
+
+    case "principles":
+      return (
+        <div>
+          {block.title && (
+            <h3 className="font-display text-lg font-semibold leading-snug">
+              {block.title}
+            </h3>
+          )}
+          <dl
+            className={`grid gap-x-8 gap-y-6 border-t border-line pt-6 sm:grid-cols-2 ${
+              block.title ? "mt-5" : ""
+            }`}
+          >
+            {block.items.map((item) => (
+              <div key={item.title}>
+                <dt
+                  className="font-mono text-[0.65rem] uppercase tracking-[0.18em]"
+                  style={{ color: accent }}
+                >
+                  {item.title}
+                </dt>
+                <dd className="mt-2 text-[15px] leading-relaxed text-mist">
+                  {item.body}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      );
+
+    case "video":
+      return (
+        <VideoEmbed
+          vimeoId={block.vimeoId}
+          title={block.title}
+          poster={block.poster}
+          caption={block.caption}
+          duration={block.duration}
+          accent={accent}
+        />
+      );
 
     case "sub":
       return (
@@ -364,11 +573,20 @@ function Block({ block, accent }: { block: CaseBlock; accent: string }) {
         </div>
       );
 
+    case "archIntro":
+      return <ArchIntro block={block} accent={accent} />;
+
+    case "archFlow":
+      return <ArchFlow block={block} accent={accent} />;
+
+    case "archCards":
+      return <ArchCards block={block} accent={accent} />;
+
     case "demo":
       return <InteractiveDemo />;
 
     case "wetDemo":
-      return <WetShowcase accent={accent} />;
+      return <WetShowcase />;
 
     case "feature":
       return (

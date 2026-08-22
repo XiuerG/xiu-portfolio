@@ -20,6 +20,8 @@ export type CaseBlock =
     /** Accent-marked pull quote / framing question. */
     kind: "callout";
     text: string;
+    /** Small label above the quote, e.g. "The challenge". */
+    label?: string;
   }
   | {
     /** Grid of titled cards — design principles, barriers, interaction modes. */
@@ -102,13 +104,103 @@ export type CaseBlock =
     body: string[];
   }
   | {
+    /** Section opener for a "how it works" system section: title + intro
+     *  paragraph on the left, a small framing callout card on the right. */
+    kind: "archIntro";
+    title: string;
+    body: string;
+    callout: { title: string; items: string[] };
+  }
+  | {
+    /** Pipeline diagram — numbered step nodes reading left to right on wide
+     *  screens, reflowing to a grid and then a vertical stack. */
+    kind: "archFlow";
+    steps: {
+      title: string;
+      body: string;
+      /** Short qualifier under the body, e.g. "Unstructured input". */
+      label: string;
+      icon?: ArchIcon;
+    }[];
+  }
+  | {
+    /** Quiet three-up cards for the decisions behind the pipeline. */
+    kind: "archCards";
+    items: { title: string; body: string }[];
+  }
+  | {
     /** WET Guard interactive dual-device showcase — renders real desktop & mobile screenshots. */
     kind: "wetDemo";
+  }
+  | {
+    /** Click-to-load Vimeo embed. The still frame carries the page until the
+     *  viewer presses play, so the video costs nothing on first paint. */
+    kind: "video";
+    vimeoId: string;
+    title: string;
+    /** Poster frame in /public. */
+    poster?: string;
+    caption?: string;
+    /** Runtime badge, e.g. "4:12". */
+    duration?: string;
+  }
+  | {
+    /** Evaluation methods, set as a quiet reference list rather than feature
+     *  cards — a kind (Automated Testing), the tool or activity, and what it
+     *  was used to surface. */
+    kind: "methods";
+    items: { kind: string; name: string; body: string }[];
+  }
+  | {
+    /** Audit findings as a vertically stacked report: numbered marker, the
+     *  observation, and the access-path context that makes it matter. */
+    kind: "findings";
+    items: {
+      title: string;
+      /** One-sentence observation from the audit. */
+      observation: string;
+      /** Why it matters — the accessibility context. */
+      context: string;
+      /** Optional annotated crop of the original interface. */
+      figure?: CaseFigure;
+    }[];
+  }
+  | {
+    /** Finding → design response pairs. The before/after figures are optional;
+     *  a pair renders only once at least one crop exists, so the section reads
+     *  as an argument first and a gallery second. */
+    kind: "responses";
+    items: {
+      finding: string;
+      response: string;
+      /** Accessibility rationale, shown under the pair. */
+      rationale?: string;
+      before?: CaseFigure;
+      after?: CaseFigure;
+    }[];
+  }
+  | {
+    /** Compact synthesis grid — used for the four POUR principles. */
+    kind: "principles";
+    title?: string;
+    items: { title: string; body: string }[];
   };
+
+/** Hairline glyphs available to `archFlow` step labels. */
+export type ArchIcon =
+  | "narrative"
+  | "extract"
+  | "plan"
+  | "search"
+  | "match"
+  | "output";
 
 export type CaseSection = {
   id: string;
   label: string;
+  /** Section heading. When set, `label` drops to an eyebrow above it and this
+   *  becomes the section's <h2>. */
+  heading?: string;
   blocks: CaseBlock[];
 };
 
@@ -119,12 +211,16 @@ export type CaseStudy = {
   eyebrow?: string;
   /** Optional multi-paragraph hero description (overrides `summary`). */
   lead?: string[];
-  /** Key facts shown under the title (Role, Timeline, Team, Tools…). */
-  meta: { label: string; value: string }[];
+  /** Key facts shown under the title (Role, Timeline, Team, Tools…). Omit
+   *  when a `researchOverview` block already carries them. */
+  meta?: { label: string; value: string }[];
   /** Hero image (Before/After, product shot). Placeholder until `src` is set. */
   hero?: CaseFigure;
   /** One-line statement rendered under the hero. */
   heroNote?: string;
+  /** Prominent external link in the header — the live piece the case study
+   *  is about ("Experience it live"). */
+  liveLink?: { href: string; label: string };
   sections: CaseSection[];
 };
 
@@ -188,10 +284,11 @@ export const projects: Project[] = [
     cardRole: "Interaction Design & Front-End Lead · Research Prototype",
     summary:
       "An interactive research interface for AI-based Written Exposure Therapy simulation and evaluation.",
-    accent: "#84b59f",
+    /* Industry design-system accent — matches the product's own slate blue. */
+    accent: "#5980a6",
     cover: {
-      src: "/wetguard/console-session.png",
-      alt: "WET Guard research console — a simulated therapist-agent and patient-agent session with researcher controls",
+      src: "/wetguard/cover-devices.webp",
+      alt: "WET Guard shown on a laptop and phone — the clinician writing console beside the patient session summary",
     },
     overview:
       "An interactive research interface for an AI-based Written Exposure Therapy system. The broader system simulates conversations between therapist and patient agents and evaluates the resulting transcripts against WET guidelines. My contribution was the application and interaction layer — workflow analysis, information architecture, interaction design, front-end implementation, and integration with existing back-end services. I did not develop the underlying models, agents, retrieval pipeline, or evaluation metrics.",
@@ -262,6 +359,35 @@ export const projects: Project[] = [
                 "Generate — run the therapist–patient agent conversation",
                 "Review — read and interpret the resulting transcript",
                 "Evaluate — connect available protocol metrics to the same run",
+              ],
+            },
+            {
+              kind: "callout",
+              text: "Every screen had to hold three tensions at once: warmth against authority, guidance against control, and transparency against calm.",
+            },
+            {
+              kind: "cards",
+              items: [
+                {
+                  title: "Safety can't be an afterthought",
+                  description:
+                    "Risk signals have to surface instantly and route to a human — without alarming the patient.",
+                },
+                {
+                  title: "One protocol, two contexts",
+                  description:
+                    "A patient on a phone and a clinician at a console need the same flow, shaped differently.",
+                },
+                {
+                  title: "Measurable by design",
+                  description:
+                    "Eight fidelity dimensions had to read at a glance, not as raw JSON.",
+                },
+                {
+                  title: "Trust through restraint",
+                  description:
+                    "A calm, near-monochrome interface, so the words carry the weight rather than the chrome.",
+                },
               ],
             },
           ],
@@ -510,8 +636,8 @@ export const projects: Project[] = [
       "Turning caregiver narratives and clinical notes into structured, actionable resource recommendations for care teams.",
     accent: "#4e8d76",
     cover: {
-      src: "/corelink/match.png",
-      alt: "CoReLink — verified resource matches for community health workers",
+      src: "/corelink/cover.webp",
+      alt: "CoReLink — the four-step flow from case intake to coordination plan, shown across the product screens",
     },
     overview:
       "CoReLink (Community Resource Link) helps community health workers connect patients and caregivers with verified local resources. I designed the four-screen experience and built the entire product — the front-end, the Flask API, and a multi-stage AI pipeline with PHI masking, live web search, and structured synthesis.",
@@ -527,24 +653,11 @@ export const projects: Project[] = [
       "One plan, two audiences — a task view for the CHW and a print-ready bilingual (EN/ES) handout for the family.",
     ],
     caseStudy: {
-      meta: [
-        {
-          label: "Role",
-          value: "UX Designer · UI Designer · Full-stack Developer",
-        },
-        { label: "Platform", value: "Web Application · Live AI Pipeline" },
-        {
-          label: "Stack",
-          value: "JavaScript · Python (Flask) · LLM + Live Web Search",
-        },
-      ],
       hero: {
         src: "/corelink/plan.png",
         alt: "CoReLink — action plan with the bilingual caregiver handout preview",
         frame: "macbook",
       },
-      heroNote:
-        "How might AI turn one messy case conversation into a structured, bilingual action plan — without asking the care team to trust it blindly?",
       sections: [
         {
           id: "research-overview",
@@ -559,8 +672,18 @@ export const projects: Project[] = [
                     "How can AI translate complex caregiver and clinical narratives into actionable care resources while keeping care teams in control of final decisions?",
                 },
                 {
+                  label: "Program",
+                  value:
+                    "Nursing AI Challenge — a research project in collaboration with UT Austin Dell Medical School and the School of Nursing.",
+                },
+                {
                   label: "Context",
                   value: "Dementia caregiving and community resource navigation.",
+                },
+                {
+                  label: "Implementation",
+                  value:
+                    "Web application · JavaScript · Python (Flask) · LLM + live web search",
                 },
                 {
                   label: "Methods",
@@ -578,14 +701,15 @@ export const projects: Project[] = [
                     "Research Framing",
                     "Workflow Design",
                     "Interaction Design",
-                    "Front-End Prototyping",
+                    "AI Pipeline Design",
+                    "Full-Stack Prototyping",
                   ],
                 },
                 { label: "Supervision", value: "Supervised by Dr. Bo Xie" },
                 {
                   label: "Status",
                   value:
-                    "End-to-end prototype; formal user evaluation not yet completed.",
+                    "End-to-end prototype, evaluated by healthcare and social work professionals; longitudinal real-world validation still needed.",
                 },
               ],
             },
@@ -600,7 +724,93 @@ export const projects: Project[] = [
               lead: "Care doesn't end at discharge — it moves home.",
               body: [
                 "When a patient leaves the hospital, a community health worker (CHW) helps the family find transportation, meals, home safety, and caregiver relief. That last mile runs on manual searching, outdated phone numbers, and constant translation — the information exists, but the time to find, verify, and hand it over does not.",
-                "CoReLink compresses that work into one arc: describe the case, review what the AI understood, match verified resources, hand over a plan.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "how-it-works",
+          label: "System Architecture",
+          blocks: [
+            {
+              kind: "archIntro",
+              title: "How CoReLink Works",
+              body:
+                "CoReLink turns a caregiver’s messy, open-ended narrative into a more structured resource navigation workflow. Instead of returning generic search results, it extracts key context, generates targeted searches, and organizes grounded recommendations for human review.",
+              callout: {
+                title: "Why this matters",
+                items: [
+                  "Community resources are fragmented",
+                  "Eligibility depends on context",
+                  "AI output needs transparency and review",
+                ],
+              },
+            },
+            {
+              kind: "archFlow",
+              steps: [
+                {
+                  title: "Care Narrative",
+                  body:
+                    "A caregiver or CHW describes the patient’s situation in natural language, including care needs, barriers, and personal context.",
+                  label: "Unstructured input",
+                  icon: "narrative",
+                },
+                {
+                  title: "Context Extraction",
+                  body:
+                    "The system identifies key constraints such as location, insurance, language, and care needs so the case can be translated into searchable factors.",
+                  label: "Location · Insurance · Language · Needs",
+                  icon: "extract",
+                },
+                {
+                  title: "Query Planning",
+                  body:
+                    "Instead of using one generic keyword, CoReLink generates targeted search queries for each need based on the case context.",
+                  label: "Need-specific search strategy",
+                  icon: "plan",
+                },
+                {
+                  title: "Resource Retrieval",
+                  body:
+                    "The system searches public web resources, reads source pages, filters duplicates, and gathers candidate services relevant to the case.",
+                  label: "Search + source reading",
+                  icon: "search",
+                },
+                {
+                  title: "Grounded Matching",
+                  body:
+                    "Retrieved resources are synthesized into recommendations and matched back to the case constraints, with reasons for fit and visible uncertainty.",
+                  label: "Why this matches",
+                  icon: "match",
+                },
+                {
+                  title: "Structured Output + Review",
+                  body:
+                    "Results are organized into clear next steps that can be reviewed, confirmed, and used by caregivers or care teams.",
+                  label: "Actionable plan",
+                  icon: "output",
+                },
+              ],
+            },
+            {
+              kind: "archCards",
+              items: [
+                {
+                  title: "Structuring narratives before search",
+                  body:
+                    "Care situations rarely come in clean categories. CoReLink first translates free-form narratives into structured constraints, making retrieval more specific and relevant than a generic search.",
+                },
+                {
+                  title: "Searching around the person, not just the keyword",
+                  body:
+                    "Resource matching depends on more than the need itself. Location, language, insurance, and affordability shape which resources are actually useful, so retrieval is tailored to the individual case.",
+                },
+                {
+                  title: "Designing for uncertainty",
+                  body:
+                    "Community resource information can be incomplete or outdated. Rather than hiding this, the workflow surfaces confidence, missing information, verification status, and human review points.",
+                },
               ],
             },
           ],
@@ -616,29 +826,6 @@ export const projects: Project[] = [
               ],
             },
             { kind: "demo" },
-          ],
-        },
-        {
-          id: "pipeline",
-          label: "Behind the Interface",
-          blocks: [
-            {
-              kind: "prose",
-              lead: "The pipeline is the product too.",
-              body: [
-                "This isn't a click-through prototype — behind the four screens runs a staged AI pipeline, each stage independently callable through a Flask API:",
-              ],
-            },
-            {
-              kind: "flow",
-              steps: [
-                "PHI masking — before any text reaches the model",
-                "LLM case analysis — structured, validated output",
-                "Live web search across local organizations",
-                "Source verification — every card cites where it came from",
-                "Synthesis into the plan, with streaming progress throughout",
-              ],
-            },
           ],
         },
         {
@@ -669,9 +856,9 @@ export const projects: Project[] = [
           blocks: [
             {
               kind: "prose",
-              lead: "Trust is an interface problem.",
+              lead: "Context matters as much as the recommendation.",
               body: [
-                "The hardest decisions weren't visual — they were about what the AI should assert, what it should ask about, and what it should refuse to pass along. Like WET Guard, CoReLink sits in the space I care most about: AI that supports human expertise in high-stakes care, rather than replacing it.",
+                "CoReLink made clear that a resource is only useful when it fits the person’s real constraints. Language, insurance, urgency, caregiver capacity, and missing information all shape whether a recommendation can actually become care. The design challenge was therefore not to automate the decision, but to help people move from an incomplete narrative to a more informed, reviewable, and actionable plan.",
               ],
             },
           ],
@@ -683,67 +870,7 @@ export const projects: Project[] = [
             {
               kind: "limitations",
               body: [
-                "The prototype demonstrates a complete workflow from care narratives to resource planning, but it has not yet been evaluated through a formal study with caregivers or community health workers.",
-              ],
-            },
-          ],
-        },
-        {
-          id: "contribution",
-          label: "My Contribution",
-          blocks: [
-            {
-              kind: "prose",
-              body: [
-                "I designed and built CoReLink end to end — the product concept, the four-screen experience, and the AI pipeline behind it.",
-              ],
-            },
-            {
-              kind: "columns",
-              groups: [
-                {
-                  title: "Product & UX",
-                  items: [
-                    "Concept & workflow definition",
-                    "Conversational intake design",
-                    "Confidence & verification model",
-                    "Bilingual handoff design",
-                  ],
-                },
-                {
-                  title: "UI Design",
-                  items: [
-                    "Design system — color, type, components",
-                    "Four-screen hi-fi interface",
-                    "Three-state trust system",
-                    "Print-ready caregiver handout",
-                  ],
-                },
-                {
-                  title: "Front-end",
-                  items: [
-                    "Hand-built JavaScript application",
-                    "Live case file & plan rendering",
-                    "Streaming progress UI",
-                    "EN/ES toggle & print view",
-                  ],
-                },
-                {
-                  title: "AI & Backend",
-                  items: [
-                    "Multi-stage AI pipeline",
-                    "PHI masking stage",
-                    "Live search & source verification",
-                    "Flask API with streaming",
-                    "Structured output validation",
-                  ],
-                },
-              ],
-            },
-            {
-              kind: "prose",
-              body: [
-                "Every screen and every pipeline stage in this case study was designed and built by me.",
+                "The prototype was developed with the School of Nursing and evaluated by healthcare and social work professionals. Further validation through real-world, longitudinal use with caregivers and care teams is still needed.",
               ],
             },
           ],
@@ -754,380 +881,406 @@ export const projects: Project[] = [
   {
     slug: "jasmines-beat",
     title: "Jasmine's Beat",
-    category: "Design & Interaction",
-    subtitle:
-      "Accessibility Evaluation and Redesign of an Adaptive Dance Platform",
+    category: "Accessibility",
+    subtitle: "Accessibility Audit & Redesign",
     year: "2023",
-    role: "Accessibility Evaluation · Interaction Design",
-    domain: "Accessibility Evaluation · Inclusive Design",
-    tags: [
-      "Accessibility Evaluation",
-      "Inclusive Design",
-      "WCAG 2.2",
-      "Interaction Design",
-    ],
+    role: "Accessibility Audit · UX Research · Interaction Redesign",
+    domain: "Accessibility · WCAG 2.2 AA",
+    tags: ["Accessibility", "WCAG 2.2", "UX Audit", "Inclusive Design"],
     cardDescription:
-      "A multi-method WCAG 2.2 accessibility evaluation and redesign of key journeys for an adaptive dance community.",
-    cardTags: ["Accessibility", "Inclusive Design", "WCAG 2.2"],
-    cardRole: "UX Research & Interaction Design · Evaluation",
+      "A WCAG 2.2 accessibility audit combining automated and manual testing, followed by an evidence-based redesign addressing navigation, semantic structure, visual clarity, and interaction barriers.",
+    cardTags: ["Accessibility", "WCAG 2.2", "UX Audit"],
+    cardRole: "Accessibility Audit · UX Research · Interaction Redesign",
     summary:
-      "Evaluating and redesigning key digital journeys for an adaptive dance community using WCAG 2.2.",
+      "Auditing a content-rich digital experience against WCAG 2.2 AA and translating the barriers into design decisions.",
     accent: "#5c93a0",
     cover: {
       src: "/jasmines-cover.png",
-      alt: "Jasmine's Beat accessible redesign — before and after",
+      alt: "Jasmine's Beat — audit findings mapped to redesigned interface states",
     },
     overview:
-      "Jasmine's Beat is an adaptive dance organization for people with diverse physical, sensory, and cognitive abilities — yet its website excluded many of the people it was designed to serve. Over 8 weeks, our team of four turned an accessibility audit into a full inclusive redesign built on WCAG 2.2 and a component-based design system.",
+      "An accessibility audit of Jasmine's Beat against WCAG 2.2 AA, combining automated scanning with keyboard and screen-reader review, and a redesign driven by what the audit found.",
     problem:
-      "While the physical community emphasized inclusion, the website introduced barriers — missing alt text, broken page structure, non-descriptive links, poor readability — that prevented users from independently accessing classes, instructors, and registration.",
+      "Barriers that were easy to overlook visually — semantic structure, focus visibility, contrast, heading hierarchy — determined whether people using keyboard navigation or assistive technology could work through the experience independently.",
     approach: [
-      "Audited the site against WCAG 2.2 and examined failures as human problems, not isolated violations.",
-      "Designed for different ways of interacting — voice-first, keyboard-first, and visual-first — rather than a single persona.",
-      "Rebuilt the experience on four principles and an accessible component system with design tokens.",
+      "Ran WAVE and axe to surface structural errors, contrast issues, and missing accessibility attributes.",
+      "Walked the interface by keyboard and reviewed headings, landmarks, and alternative text as assistive technology would encounter them.",
+      "Translated each finding into a specific interface change rather than a compliance note.",
     ],
     outcome: [
-      "Logical keyboard navigation, semantic structure, descriptive accessible names, and screen reader compatibility across the experience.",
-      "Improvements that reduced cognitive effort and enabled more users to independently complete essential tasks.",
+      "Six representative barriers documented across contrast, semantics, alternative text, hierarchy, focus visibility, and carousel interaction.",
+      "A redesign in which every change traces back to a finding — focus states, heading structure, text alternatives, contrast, and carousel controls.",
     ],
     caseStudy: {
+      eyebrow: "2023 · Accessibility Audit & Redesign",
+      lead: [
+        "Auditing a content-rich digital experience against WCAG 2.2 AA and translating accessibility barriers into actionable design improvements.",
+      ],
       meta: [
         {
-          label: "Project Type",
-          value: "Accessibility · Inclusive Design · UX Research",
+          label: "Role",
+          value: "Accessibility Audit · UX Research · Interaction Redesign",
         },
-        { label: "Role", value: "UX Designer & Researcher" },
-        { label: "Duration", value: "8 Weeks" },
-        { label: "Team", value: "2 UX Designers · 2 UX Researchers" },
         {
-          label: "Tools",
-          value: "Figma · WCAG 2.2 · Accessibility Audit · User Research",
+          label: "Methods",
+          value:
+            "WCAG 2.2 AA · WAVE · axe · Keyboard Testing · Screen Reader Review",
         },
+        {
+          label: "Focus",
+          value:
+            "Navigation · Semantic Structure · Visual Accessibility · Interaction States",
+        },
+        { label: "Year", value: "2023" },
+        { label: "Duration", value: "8 Weeks" },
       ],
-      hero: { alt: "Jasmine's Beat website — before and after the redesign" },
-      heroNote:
-        "Jasmine's Beat empowers people of all abilities through adaptive dance. Yet its digital experience unintentionally excluded many of the people it was designed to serve.",
+      hero: {
+        src: "/jasmines-cover.png",
+        alt: "Jasmine's Beat — the audited interface alongside the redesigned states",
+      },
       sections: [
         {
-          id: "evaluation-overview",
-          label: "Evaluation Overview",
-          blocks: [
-            {
-              kind: "researchOverview",
-              entries: [
-                {
-                  label: "Evaluation Question",
-                  value:
-                    "What barriers prevent people with visual, motor, and cognitive access needs from completing key tasks?",
-                },
-                {
-                  label: "Methods",
-                  value: [
-                    "WCAG 2.2 AA Review",
-                    "Automated Testing",
-                    "Keyboard Navigation",
-                    "Screen-Reader Inspection",
-                    "Interface Analysis",
-                  ],
-                },
-                {
-                  label: "Scope",
-                  value: [
-                    "Class Discovery",
-                    "Registration",
-                    "Donation",
-                    "Content Navigation",
-                  ],
-                },
-                {
-                  label: "My Role",
-                  value: [
-                    "Accessibility Evaluation",
-                    "Interaction Design",
-                    "Prototyping",
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
           id: "context",
-          label: "Context",
+          label: "Accessibility Case Study",
+          heading: "Designing beyond what users can see",
           blocks: [
             {
               kind: "prose",
-              lead: "Inclusion shouldn't stop at the front door.",
               body: [
-                "Jasmine's Beat is an adaptive dance organization dedicated to creating movement experiences for people with diverse physical, sensory, and cognitive abilities.",
-                "However, while the physical community emphasized inclusion, its website introduced barriers that prevented many users from independently accessing classes, instructors, and registration.",
-                "This project explored how accessibility could become an integral part of the product experience rather than a technical afterthought.",
+                "Accessibility is not only about whether content is technically available — it shapes whether people can understand, navigate, and interact with an experience independently.",
+                "I audited Jasmine's Beat against WCAG 2.2 AA to identify barriers that were easy to overlook visually but meaningful for users relying on keyboard navigation, assistive technology, or clearer information structure.",
               ],
             },
-            { kind: "figure", figure: { alt: "The original Jasmine's Beat website" } },
+            {
+              kind: "callout",
+              label: "The challenge",
+              text: "How might we uncover accessibility barriers in the existing experience and translate technical audit findings into design decisions that improve usability for a broader range of users?",
+            },
           ],
         },
         {
-          id: "challenge",
-          label: "The Challenge",
+          id: "audit",
+          label: "Audit",
+          heading: "Evaluating the experience from multiple access paths",
           blocks: [
             {
-              kind: "prose",
-              lead: "Accessibility failures are human problems.",
-              body: [
-                "Our accessibility audit identified several barriers that interrupted users' ability to complete essential tasks. Instead of treating these as isolated WCAG violations, we examined how they affected real user experiences.",
-              ],
-            },
-            {
-              kind: "cards",
+              kind: "methods",
               items: [
                 {
-                  title: "Missing alternative text",
-                  description:
-                    "Images and non-text content became invisible to screen reader users.",
+                  kind: "Automated Testing",
+                  name: "WAVE",
+                  body: "Used to identify issues such as structural errors, contrast problems, missing accessibility attributes, and semantic warnings.",
                 },
                 {
-                  title: "Broken page structure",
-                  description:
-                    "Users relying on assistive technologies struggled to understand where they were within the site.",
+                  kind: "Automated Testing",
+                  name: "axe",
+                  body: "Used as an additional accessibility validation layer to identify WCAG-related implementation issues.",
                 },
                 {
-                  title: "Non-descriptive links",
-                  description:
-                    "Generic labels such as “Click Here” removed important navigation context.",
+                  kind: "Manual Testing",
+                  name: "Keyboard Navigation",
+                  body: "Reviewed whether interactive elements could be reached, understood, and operated without a mouse, including focus visibility and navigation order.",
                 },
                 {
-                  title: "Poor readability",
-                  description:
-                    "Low contrast and inconsistent typography increased cognitive effort for users with visual impairments.",
+                  kind: "Assistive Technology Review",
+                  name: "Screen Reader + Semantic Structure",
+                  body: "Reviewed headings, landmarks, alternative text, content hierarchy, and how interface structure would be interpreted beyond the visual presentation.",
                 },
               ],
             },
-            { kind: "figure", figure: { alt: "Accessibility audit findings" } },
           ],
         },
         {
-          id: "interaction-modes",
-          label: "Designing for Different Ways of Interacting",
+          id: "findings",
+          label: "Findings",
+          heading: "The most important barriers were structural, not decorative",
           blocks: [
             {
-              kind: "prose",
-              lead: "Accessibility isn't one experience.",
-              body: [
-                "Different users interact with digital products in fundamentally different ways.",
-              ],
-            },
-            {
-              kind: "cards",
+              kind: "findings",
               items: [
                 {
-                  title: "Voice-first interaction",
-                  description:
-                    "Users relying on voice control need predictable page structure, meaningful labels, and consistent navigation.",
+                  title: "Insufficient contrast",
+                  observation:
+                    "Some text and interface elements did not provide sufficient contrast, reducing readability and making important information harder to distinguish.",
+                  context:
+                    "Low contrast can create barriers for users with low vision, color-vision differences, or situational visibility constraints.",
                 },
                 {
-                  title: "Keyboard-first interaction",
-                  description:
-                    "Sequential focus order determines whether tasks can be completed efficiently.",
+                  title: "Weak landmark and semantic structure",
+                  observation:
+                    "Page regions and content structure were not always communicated clearly through semantic landmarks.",
+                  context:
+                    "Users navigating with assistive technology rely on structural cues — not visual layout alone — to understand where they are on a page.",
                 },
                 {
-                  title: "Visual-first communication",
-                  description:
-                    "Users with hearing impairments depend on captions, structured content, and clear visual hierarchy rather than audio cues.",
+                  title: "Missing or insufficient alternative text",
+                  observation:
+                    "Some meaningful visual content lacked useful text alternatives.",
+                  context:
+                    "When visual information is not represented semantically, screen-reader users may lose context entirely.",
+                },
+                {
+                  title: "Heading hierarchy",
+                  observation:
+                    "Visual hierarchy and semantic heading hierarchy were not consistently aligned.",
+                  context:
+                    "Headings function as navigation landmarks for many screen-reader users and help everyone scan complex content more efficiently.",
+                },
+                {
+                  title: "Keyboard focus visibility",
+                  observation:
+                    "Focus states were difficult to identify or inconsistent across interactive elements.",
+                  context:
+                    "Keyboard users need a persistent visual indication of where interaction will occur.",
+                },
+                {
+                  title: "Carousel interaction",
+                  observation:
+                    "Carousel behavior introduced accessibility concerns related to navigation, control, and understanding changing content.",
+                  context:
+                    "Dynamic interfaces can become difficult to operate when users cannot reliably pause, navigate, or understand content changes.",
                 },
               ],
             },
-            { kind: "figure", figure: { alt: "Two user journeys through the site" } },
           ],
         },
         {
-          id: "principles",
-          label: "Design Principles",
+          id: "design-response",
+          label: "Design Response",
+          heading: "Turning audit findings into design decisions",
           blocks: [
             {
-              kind: "prose",
-              body: [
-                "Rather than redesigning individual screens, we redesigned the experience around four principles.",
-              ],
-            },
-            {
-              kind: "cards",
+              kind: "responses",
               items: [
                 {
-                  title: "Make navigation predictable",
-                  description:
-                    "Users should always know where they are and how to move forward.",
+                  finding: "Keyboard focus was difficult to perceive.",
+                  response:
+                    "Introduced consistent, high-visibility focus states across interactive elements so users can track navigation without relying on a pointer.",
                 },
                 {
-                  title: "Reduce cognitive effort",
-                  description:
-                    "Content should be easy to scan, understand, and interact with.",
+                  finding:
+                    "Visual hierarchy did not consistently map to semantic structure.",
+                  response:
+                    "Reorganized heading levels and content grouping so the page hierarchy remains understandable both visually and through assistive technology.",
                 },
                 {
-                  title: "Support assistive technologies",
-                  description:
-                    "Accessibility should work naturally with screen readers, voice control, and keyboard navigation.",
+                  finding:
+                    "Some information relied too heavily on visual presentation.",
+                  response:
+                    "Strengthened text alternatives, labels, and structural cues so important meaning is preserved when visual context is unavailable.",
                 },
                 {
-                  title: "Create consistency",
-                  description:
-                    "Reusable components and design tokens ensure accessibility across the entire experience.",
+                  finding: "Low-contrast interface elements reduced clarity.",
+                  response:
+                    "Adjusted typography, foreground/background relationships, and state styling to improve readability while preserving the original visual identity.",
+                },
+                {
+                  finding:
+                    "Dynamic carousel interactions created additional navigation complexity.",
+                  response:
+                    "Redesigned controls and interaction states to make carousel behavior more understandable and keyboard-accessible.",
                 },
               ],
             },
-          ],
-        },
-        {
-          id: "redesign",
-          label: "Redesigning the Experience",
-          blocks: [
             {
-              kind: "sub",
-              title: "Helping users navigate with confidence",
-              body: [
-                "The original navigation relied on visual placement alone, leaving screen reader and keyboard users without a sense of place.",
-                "We rebuilt it with a consistent structure, semantic landmarks, and a logical heading hierarchy — so users always know where they are and how to move forward, whether they see the page, hear it, or tab through it.",
-              ],
-              figure: { alt: "Navigation — before and after" },
-            },
-            {
-              kind: "sub",
-              title: "Making every interaction understandable",
-              body: [
-                "Buttons, forms, and links were redesigned to describe their purpose.",
-                "Generic labels became descriptive accessible names, forms gained clear labels and error messages, and every interactive element received a visible, consistent focus state.",
-              ],
-              figure: { alt: "Redesigned buttons, forms, and links" },
-            },
-            {
-              kind: "sub",
-              title: "Designing for focus",
-              body: [
-                "Typography, contrast, and spacing were reworked to reduce cognitive effort.",
-                "Higher contrast, a comfortable type scale, and generous spacing make content easy to scan and understand for users with visual impairments — and calmer to read for everyone.",
-              ],
-              figure: { alt: "Typography, contrast, and spacing system" },
-            },
-            {
-              kind: "sub",
-              title: "Building consistency through components",
-              body: [
-                "Buttons, inputs, and cards were consolidated into a reusable component library.",
-                "Accessibility is built into each component once — labels, focus states, contrast — and inherited everywhere it is used.",
-              ],
-              figure: { alt: "Component sticker sheet" },
-            },
-          ],
-        },
-        {
-          id: "beyond-compliance",
-          label: "Designing Beyond Compliance",
-          blocks: [
-            {
-              kind: "prose",
-              lead: "Beyond the guidelines.",
-              body: [
-                "Instead of designing only to satisfy WCAG guidelines, we focused on creating an experience that felt intuitive regardless of how users interacted with the interface.",
-                "Accessibility became a design principle rather than a validation step.",
-              ],
-            },
-            { kind: "figure", figure: { alt: "Accessible design tokens" } },
-          ],
-        },
-        {
-          id: "outcome",
-          label: "Measuring the Outcome",
-          blocks: [
-            {
-              kind: "prose",
-              lead: "Measuring success.",
-              body: [
-                "The redesigned experience was evaluated against the accessibility issues identified during the initial audit. Improvements included:",
-              ],
-            },
-            {
-              kind: "list",
-              checked: true,
+              kind: "principles",
+              title: "What changed",
               items: [
-                "Logical keyboard navigation",
-                "Descriptive accessible names",
-                "Semantic page structure",
-                "Improved visual contrast",
-                "Accessible forms",
-                "Screen reader compatibility",
+                {
+                  title: "Perceivable",
+                  body: "Improved contrast and text alternatives.",
+                },
+                {
+                  title: "Operable",
+                  body: "Improved keyboard navigation and focus visibility.",
+                },
+                {
+                  title: "Understandable",
+                  body: "Improved hierarchy and interaction clarity.",
+                },
+                {
+                  title: "Robust",
+                  body: "Improved semantic structure for assistive technologies.",
+                },
               ],
             },
-            {
-              kind: "prose",
-              body: [
-                "Rather than simply increasing compliance, these improvements reduced cognitive effort and enabled more users to independently complete essential tasks.",
-              ],
-            },
-            { kind: "figure", figure: { alt: "Validation against the original audit" } },
           ],
         },
         {
           id: "reflection",
           label: "Reflection",
+          heading: "Accessibility changed what I considered a design decision.",
           blocks: [
             {
               kind: "prose",
-              lead:
-                "Accessibility is not a checklist; it is a measure of whether people can meaningfully participate.",
               body: [
-                "Working on Jasmine's Beat changed how I think about accessibility. Designing for people with different abilities is not about creating separate experiences — it is about creating one experience that works for everyone.",
-                "Although this project focused on an adaptive dance community, the principles directly translate to digital health, where trust, accessibility, and equitable participation are essential to patient and caregiver experiences.",
+                "This project pushed me to evaluate interfaces beyond their visual appearance. A hierarchy that looks clear may not exist semantically; an interaction that feels obvious with a mouse may disappear for a keyboard user.",
+                "The audit made accessibility less of a final compliance check and more of a way to question how information and interaction are experienced through different access paths.",
               ],
             },
           ],
         },
+      ],
+    },
+  },
+  {
+    slug: "ocean-vr",
+    title: "Ocean — VR Game",
+    category: "Design & Interaction",
+    subtitle:
+      "An Immersive VR Experience for Marine Conservation Advocacy",
+    year: "2024",
+    role: "UX Design · Game Design · Unity Development",
+    domain: "Virtual Reality · UX Design",
+    tags: ["Virtual Reality", "Game Design", "Unity", "Environmental Advocacy"],
+    cardDescription:
+      "A VR game that turns ocean plastic pollution from a statistic into something you touch — mutated creatures hand you their memories.",
+    cardTags: ["Virtual Reality", "Game Design", "Unity"],
+    cardRole: "UX & Game Design · Unity Development",
+    summary:
+      "An immersive VR experience that makes marine plastic pollution felt rather than reported.",
+    accent: "#38a3a5",
+    cover: {
+      src: "/ocean/hero.webp",
+      alt: "Ocean — VR Game: an underwater scene rendered in Unity",
+    },
+    overview:
+      "Ocean is a VR game about marine plastic pollution. Players descend into a beautiful but altered underwater world, meet creatures whose bodies have been changed by decades of plastic, and — by touching them — inherit their memories of what the ocean used to be.",
+    problem:
+      "Ocean conservation loses the public-attention race. Google Trends shows consistently lower search interest than deforestation or climate change, because ocean damage happens out of sight and rarely produces the dramatic visuals that drive coverage.",
+    approach: [
+      "Built a virtual marine environment in Unity so players could witness ocean degradation firsthand instead of reading about it.",
+      "Designed a three-stage mutation system that turns the chemistry of plastic pollution into visible, embodied change in the creatures.",
+      "Made touch the core mechanic — contact with a mutated creature triggers its memory, so understanding arrives through the hands.",
+    ],
+    outcome: [
+      "A playable Unity VR build with hand-tracked interaction, a full underwater environment, and custom-modeled mutated species.",
+      "A narrative structure where players clean plastic waste and rescue harmed animals, unlocking scattered memory recordings as they explore.",
+    ],
+    caseStudy: {
+      eyebrow: "2024 · Virtual Reality Experience · UX Design",
+      lead: [
+        "Ocean is an immersive VR experience about the fragility of marine ecosystems and the reach of plastic pollution.",
+        "Players dive into a world that is still beautiful — and still wrong. The creatures they meet have adapted to survive plastic, and their bodies carry the record of it. The game is less an argument than an encounter.",
+      ],
+      meta: [
+        { label: "Project Type", value: "VR Experience · Game Design · UX" },
+        { label: "Role", value: "UX Design · Game Design · Unity Development" },
+        { label: "Platform", value: "Meta Quest · Unity" },
         {
-          id: "scope",
-          label: "Project Scope",
+          label: "Tools",
+          value: "Unity · Blender · C# · Procreate · Figma",
+        },
+      ],
+      hero: {
+        src: "/ocean/hero.webp",
+        alt: "An underwater scene from Ocean, rendered in Unity",
+      },
+      heroNote:
+        "Ocean damage happens out of sight. VR is the one medium that can put a person inside it.",
+      sections: [
+        {
+          id: "walkthrough",
+          label: "Walkthrough",
           blocks: [
             {
-              kind: "limitations",
+              kind: "prose",
+              lead: "See it running.",
               body: [
-                "This project was a multi-method accessibility evaluation and redesign exercise. It did not include a participant-based study with disabled users.",
+                "A recorded playthrough of the Unity build — descending into the environment, meeting the mutated species, and triggering the memory sequences by touch.",
               ],
+            },
+            {
+              kind: "video",
+              vimeoId: "935813613",
+              title: "Ocean — VR Game walkthrough",
+              poster: "/ocean/scene-wide.webp",
+              caption:
+                "Gameplay walkthrough — recorded in-headset from the Unity build.",
             },
           ],
         },
+      ],
+    },
+  },
+  {
+    slug: "atlas-of-crossings",
+    title: "An Atlas of Crossings",
+    category: "Design & Interaction",
+    subtitle:
+      "Four Interactive Storybooks on Memory, Return, and Home",
+    year: "2026",
+    role: "UX Research / Interactive Experience Designer",
+    domain: "Interactive Narrative · Web",
+    tags: ["Interactive Narrative", "Web", "Diaspora", "Interaction Design"],
+    cardDescription:
+      "Four interactive storybooks on memory, return, and home across the Asian diaspora. Each spread turns a feeling into something the reader operates.",
+    cardTags: ["Interactive Narrative", "Web"],
+    cardRole: "UX Research / Interactive Experience Designer",
+    summary:
+      "Four interactive storybooks on memory, return, and home across the Asian diaspora.",
+    accent: "#c08457",
+    cover: {
+      src: "/design/atlas-of-crossings.webp",
+      alt: "An Atlas of Crossings — an interactive storybook spread",
+    },
+    overview:
+      "An Atlas of Crossings is a set of four interactive storybooks about memory, return, and home across the Asian diaspora. Each spread turns a feeling into something the reader operates rather than reads.",
+    problem:
+      "Diaspora writing usually asks to be read. These stories ask to be handled — the distance between leaving and returning is easier to feel through an interface that resists you than through a paragraph that describes it.",
+    approach: [
+      "Built each spread around a single interaction that enacts the feeling it is about.",
+      "Kept the reading surface quiet so the mechanic, not the ornament, carries the moment.",
+    ],
+    outcome: [
+      "Four playable storybooks running on the web, readable end to end in a browser.",
+    ],
+    caseStudy: {
+      eyebrow: "2026 · Interactive Narrative · Web",
+      lead: [
+        "Four interactive storybooks on memory, return, and home across the Asian diaspora.",
+        "Each spread turns a feeling into something the reader operates.",
+      ],
+      meta: [
+        { label: "Project Type", value: "Interactive Narrative · Web" },
         {
-          id: "contributions",
-          label: "My Contributions",
+          label: "Role",
+          value: "UX Research / Interactive Experience Designer",
+        },
+        {
+          label: "Organization",
+          value: "Moritz Center for Societal Impact",
+        },
+        { label: "Year", value: "2026" },
+      ],
+      hero: {
+        src: "/design/atlas-landing.webp",
+        alt: "An Atlas of Crossings — the four storybooks on the landing page",
+      },
+      liveLink: {
+        href: "https://storybook-sigma-ten-66.vercel.app/",
+        label: "Experience it live",
+      },
+      sections: [
+        {
+          id: "walkthrough",
+          label: "Walkthrough",
           blocks: [
             {
-              kind: "columns",
-              groups: [
-                {
-                  title: "UX Research",
-                  items: [
-                    "Accessibility Audit",
-                    "Competitive Analysis",
-                    "User Journey Analysis",
-                    "Research Planning",
-                  ],
-                },
-                {
-                  title: "Product Design",
-                  items: [
-                    "Information Architecture",
-                    "Interaction Design",
-                    "Responsive Interface",
-                    "Design System",
-                  ],
-                },
-                {
-                  title: "Accessibility",
-                  items: [
-                    "WCAG 2.2 Evaluation",
-                    "Keyboard Navigation",
-                    "Screen Reader Optimization",
-                    "Inclusive Interaction Design",
-                  ],
-                },
+              kind: "prose",
+              lead: "See it running.",
+              body: [
+                "A recorded read-through of all four storybooks — every spread, and the interaction each one is built around.",
               ],
+            },
+            {
+              kind: "video",
+              vimeoId: "1220378299",
+              title: "An Atlas of Crossings walkthrough",
+              poster: "/design/atlas-of-crossings.webp",
+              duration: "6:53",
+              caption:
+                "Full walkthrough of the four storybooks.",
             },
           ],
         },

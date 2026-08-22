@@ -4,19 +4,15 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState<"dark" | "light">("light");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // Mirrors the bootstrap script in layout.tsx: light unless the visitor
+    // has explicitly chosen dark before.
     const savedTheme = localStorage.getItem("theme") as "dark" | "light" | null;
-    let initialTheme: "dark" | "light" = "dark";
-    if (savedTheme) {
-      initialTheme = savedTheme;
-    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
-      initialTheme = "light";
-    }
-    setTheme(initialTheme);
+    setTheme(savedTheme === "dark" ? "dark" : "light");
   }, []);
 
   const toggleTheme = () => {
