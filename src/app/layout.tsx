@@ -21,7 +21,7 @@ const body = Nunito_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Xiuer Gu — Health HCI Researcher & Designer",
+  title: "Xiuer Gu",
   description:
     "Interdisciplinary Health HCI researcher and designer working on human-centered AI for digital health, mental health, caregiving, and accessibility.",
 };
