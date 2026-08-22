@@ -10,7 +10,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Barlow+Condensed:wght@400;600&display=swap");
 
 .wg {
-  --color-bg: #f2f2f3;
+  /* The canvas is the portfolio's, not this design system's — so the page sits
+     on the same paper as every other page, in both themes. The token stays
+     opaque because component surfaces inside the page paint with it. */
+  --color-bg: var(--color-ground);
   --color-surface: #e9e9ea;
   --color-text: #1d1f20;
   --color-accent: #5980a6;
@@ -59,7 +62,9 @@
   --shadow-md: 0 3px 10px color-mix(in srgb, #2b2b2d 16%, transparent);
   --shadow-lg: 0 12px 32px color-mix(in srgb, #2b2b2d 22%, transparent);
 
-  background: var(--color-bg);
+  /* Transparent, so --color-ground *and* the body's paper grain show through
+     rather than being covered by a flat fill. */
+  background: transparent;
   color: var(--color-text);
   font-family: var(--font-body);
   font-size: 15px;
@@ -266,7 +271,6 @@
    ================================================================== */
 html[data-theme="dark"] .wg,
 html:not(.light):not([data-theme="light"]) .wg {
-  --color-bg: #141416;
   --color-surface: #1c1d20;
   --color-text: #ececee;
   --color-accent: #8fb4d8;
@@ -421,7 +425,10 @@ html:not(.light):not([data-theme="light"]) .wg {
 
 html[data-theme="dark"] .wg,
 html:not(.light):not([data-theme="light"]) .wg {
-  --color-bg: #0f1013;
+  /* Painted rather than transparent in dark: the text below goes near-white,
+     so this must not rely on the body underneath having repainted. */
+  background: var(--color-ground);
+
   --color-surface: #171920;
   --color-text: #f0f1f3;
   --color-divider: color-mix(in srgb, #f0f1f3 24%, transparent);
