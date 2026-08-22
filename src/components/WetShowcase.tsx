@@ -139,6 +139,36 @@ export function WetShowcase() {
     };
   }, []);
 
+  /**
+   * Phone scaling for the console mockups. They are drawn at a desktop width
+   * and scaled down whole (see the `zoom` rule in wetguard-industry.css), which
+   * needs a ratio CSS cannot compute on its own — `zoom` takes a number, not a
+   * calc(). Publish one as a custom property and keep it in step with resizes.
+   */
+  useEffect(() => {
+    const root = document.querySelector<HTMLElement>(".wg");
+    if (!root) return;
+
+    const DESIGN_WIDTH = 900;
+    const GUTTER = 40; // the section padding the mockups sit inside
+
+    const apply = () => {
+      if (window.innerWidth >= 768) {
+        root.style.removeProperty("--wg-app-scale");
+        return;
+      }
+      const scale = Math.min(
+        1,
+        (window.innerWidth - GUTTER) / DESIGN_WIDTH,
+      );
+      root.style.setProperty("--wg-app-scale", String(Math.max(0.3, scale)));
+    };
+
+    apply();
+    window.addEventListener("resize", apply);
+    return () => window.removeEventListener("resize", apply);
+  }, []);
+
   const next = getNextProject("wet-guard");
 
   return (

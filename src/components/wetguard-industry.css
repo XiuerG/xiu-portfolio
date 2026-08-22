@@ -531,3 +531,29 @@ html:not(.light):not([data-theme="light"]) .wg {
     min-width: 0;
   }
 }
+
+/* ==================================================================
+   Phone: the console mockups are pictures of a desktop application.
+   Reflowing them into ~350px put the icon rail on top of the brand
+   panel and cut the form off at the right edge — it read as a broken
+   layout rather than as a product shot. Draw them at their desktop
+   width instead and scale the whole plate down to fit, so the
+   composition survives at the size a phone can give it.
+
+   `zoom` rather than `transform: scale()`: zoom scales the layout box
+   too, so the frame around the mockup collapses to the scaled height
+   instead of leaving a tall gap underneath.
+   ================================================================== */
+@media (max-width: 767px) {
+  .wg .app:not(.wg-phone) {
+    width: 900px;
+    zoom: var(--wg-app-scale, 0.38);
+    overflow-x: visible;
+  }
+
+  /* The rail is narrowed at 640px for the squeezed layout; scaled, it
+     should keep its drawn proportions. */
+  .wg .sidebar-demo {
+    width: 60px;
+  }
+}
